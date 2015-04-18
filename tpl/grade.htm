@@ -1,0 +1,405 @@
+{subtemplate common/header}
+<section id="fail-container"  >
+</section>
+<section id="guide-container"  >
+</section>
+<section id="all-container" >
+</section>
+<section id="container">
+
+
+</section>
+</body>
+<script type="text/javascript" src="tpl/js/jquery.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    //保留小数点
+    function fomatFloat(src){
+    	pos = 3;     
+    	return Math.round(src*Math.pow(10, pos))/Math.pow(10, pos);     
+  }
+
+
+    //是否为正整数,返回boolean 
+    function isPositiveNum(s){ 
+    	var re = /^[0-9]*[1-9][0-9]*$/ ;  
+    	return re.test(s)  
+	}
+
+	//将分数转化为绩点
+	function changeGpa(data){
+		var f = parseFloat(data);
+		var result;
+
+		if(isNaN(f)){
+			if(data == '优秀'){
+				result = 4.0; 
+			}else if(data == '良好'){
+				result = 3.6;
+			}else if(data == '中等'){
+				result = 2.7;
+			}else if((data == '通过') || (data == '及格')){
+				result = 1.0;
+			}else if((data == '未通过') || (data == '不及格')){
+				result = 0;
+			}
+		}else{
+			if(data >= 95 && data <= 100){
+				result = 4;
+			}else if(data >=90 && data < 95){
+				result = 3.8;
+			}else if(data >= 85 && data < 90 ){
+				result = 3.6;
+			}else if(data >=80 && data < 85){
+ 				result = 3.2;
+			}else if(data >= 75 && data < 80){
+				result = 2.7;
+			}else if(data >= 70 && data < 75){
+				result = 2.2;
+			}else if(data >= 65 && data <70){
+				result = 1.7;
+			}else if(data >= 60 && data < 65){
+				result = 1;
+			}else if(data < 60){
+				result = 0;
+			}
+		}
+
+		return result;
+	}
+
+	//将等级转化为分数
+	function changeGrade(data){
+		var f = parseFloat(data);
+		var result;
+		if(isNaN(f)){
+			if(data == '优秀'){
+				result = 95; 
+			}else if(data == '良好'){
+				result = 85;
+			}else if(data == '中等'){
+				result = 75;
+			}else if((data == '通过') || (data == '及格')){
+				result = 60;
+			}else if((data == '未通过') || (data == '不及格')){
+				result = 0;
+			}
+		}else{
+			result = f;
+		}
+
+		return result;
+	}
+
+	var result = <?php echo json_encode($data); ?>;
+	//判断学号密码是否正确
+	switch (result.number){
+		case 1000:
+			//alert('成功，请稍后');
+			break;
+		case 1001:
+			alert('学号错误');
+			window.location.href = 'index.php/index/';
+			break;
+		case 1002:
+			alert('密码错误');
+			window.location.href = 'index.php/index/';
+			break;
+		case 1003:
+			alert('密码错误');
+			window.location.href = 'index.php/index/';
+			break;	
+		case 1004:
+			alert('密码错误');
+			window.location.href = 'index.php/index/';
+			break;	
+		case 1005:
+			alert('密码错误');
+			window.location.href = 'index.php/index/';
+			break;					
+		default :
+			alert(result.number);
+			break;	
+	}
+
+
+/****************分割字符串，得到html对象，并渲染到隐藏标签中 Start************************/	
+	//不及格成绩
+	var failGradeStart = result.bjg.indexOf('<table');
+	var failGradeEnd = result.bjg.indexOf('</body');
+	var failGrade = result.bjg.substring(failGradeStart, failGradeEnd);
+	//指导性教学计划
+	var guideStart = result.lnFajhKcCjInfo.indexOf('<table');
+	var guideEnd = result.lnFajhKcCjInfo.indexOf('</body>');
+	var guideGrade = result.lnFajhKcCjInfo.substring(guideStart,guideEnd);
+	//全部成绩
+	var allGradeStart = result.qbinfo.indexOf('<table');
+	var allGradeEnd = result.qbinfo.indexOf('</body>');
+	var allGrade = result.qbinfo.substring(allGradeStart,allGradeEnd);
+	// var failGrade = splitString(result.bjg, '<table', '</body');
+	// var guideGrade = splitString(result.lnFajhKcCjInfo, '<table', '</body>');
+	// var allGrade = splitString(result.qbinfo, '<table', '</body>');
+
+/************不及格成绩 Start**************************************************/
+
+	var fail = new Array();
+	var selectFail = $(failGrade).find("table.titleTop2");
+
+	selectFail.each(function(i){
+
+		fail[i] = i; //fail[0]尚不及格 fail[1]曾不及格
+		fail[i] = new Array();
+		var selectFailEach = $("tbody tr td table tbody tr", this);
+		selectFailEach.each(function(j){
+			fail[i][j] = j;//fail[i][j] 第j门未通过课程
+			fail[i][j] = new Array();
+			var selectFailEachDetails = $("td", this);
+
+			selectFailEachDetails.each(function(k){
+				fail[i][j][k] = $.trim($(this).text());//fail[i][j][0]课程号，fail[i][j][1]课序号，fail[i][j][2]课程名，fail[i][j][3]英文课程名，fail[i][j][4]学分，fail[i][j][5]课程属性，fail[i][j][6]成绩，fail[i][j][7]考试时间，fail[i][j][8]未通过原因 
+			});
+		});
+		
+	});
+	//console.log(fail);
+
+
+/*******************指导性教学计划 Start********************/
+
+	var guide = new Array();
+	var selectGuide = $(guideGrade).filter("table#tblHead.title");
+
+	selectGuide.each(function(i){
+
+		var selectGuideHead = $("tbody tr td table tbody tr td b", this);
+		var selectGuideTitle = $(this).next().next().find("tbody tr td.pageAlign tbody tr");
+		guide[i] = new Array();
+
+		selectGuideTitle.each(function(j){
+
+			guide[i].term = selectGuideHead.text();
+			guide[i][j] = new Array();
+			var selectGuideTitleContent = $("td", this);
+
+			selectGuideTitleContent.each(function(k){
+				guide[i][j][k] = $.trim($(this).text());
+			});
+		});
+	});
+	//console.log(guide);
+
+
+/****************全部及格成绩 Start*******************/
+
+	var grade = new Array();
+	var selectTerm = $(allGrade).filter("table#tblHead.title");
+	
+	selectTerm.each(function(i){
+		grade[i] = new Array();
+		grade[i].term = $(this).find("tbody tr td table tbody tr td b").text();//学期名称
+		var selectGradeArea = $(this).next().next();//本学期成绩信息所在的html对象
+
+		selectGradeArea.each(function(j){
+		 	var selectGradeClass = $("td.pageAlign table tbody tr", this);//第i学期的所有课程信息
+		 	grade[i][j] = new Array();//第i学期第j门课程
+
+		 	selectGradeClass.each(function(k){
+		 		var selectGradeClassDetails = $("td", this);
+		 		grade[i][j][k] = new Array();
+		 			selectGradeClassDetails.each(function(l){
+		 				grade[i][j][k][l] = $.trim($(this).text());//分别获取第i学期的第j门课程基本信息，并去掉空格，存为数组
+		 			});		 		
+		 	});
+		 });
+
+	});
+
+	//console.log(grade);//灵异现象。在使用pop()方法之前和之后console.log()的结果完全一样
+	var gradeLength = grade.length;//总学期数
+	//console.log(gradeLength);
+	for(var i = 0; i < gradeLength; i++){
+		var n = grade[i][0].length - 1;//课程总数
+		grade[i]['info'] = $.trim(grade[i][0][n]);
+		grade[i]['term'] = grade[i]['term'].substr(0, 12);
+		grade[i][0].pop();
+	}
+	//console.log(grade);
+
+
+	//尚不及格成绩
+	var failling = fail[0];
+	if(failling != ''){
+
+		for(var i=0; i<failling.length; i++){
+
+			for(var j=0; j<failling.length; j++){
+
+				if((i != j) && failling[j][0] == failling[i][0]){
+
+					if(failling[i][7] < failling[j][7]){
+						failling.splice(i, 1);
+					}else{
+						failling.splice(j, 1);
+					}
+				}
+			}
+		}
+	}
+	//console.log(failling);//failling[i][0] 课程号
+
+	var guideInfo = new Array();
+	var guideLength = guide.length;
+	var n, x, y, z;
+	var termNumber = parseInt((guideLength - 1) / 3);//学期数
+
+	if(!isPositiveNum(termNumber)){
+		termNumber = 8;
+	}
+
+	for(var i =0; i < termNumber; i++){
+		x = parseInt(parseFloat(i * 3) + parseFloat(1));
+		y = parseInt(parseFloat(i * 3) + parseFloat(2));
+		z = parseInt(parseFloat(i * 3) + parseFloat(3));
+		//该学期有必修或选修
+		if(guide[y][1]){
+			guideInfo[i] = guide[y];
+
+			if(guide[z] != ''){
+				delete(guide[z].term);
+				guideInfo[i] = guide[z].concat(guideInfo[i]);
+			}
+			guideInfo[i]['term'] = guide[y].term.substr(0, 12);//2013-2014学年秋(两学期)
+		}
+	}
+	//console.log(guideInfo);//guideInfo[i]第i学期 guideInfo[i][j][0] 第i学期第j门课程的课程号
+	//用不及格成绩的课程号和guideInfo的课程号对比。如果一样，则将guideInfo的学期名称和grade的学期名称对比。如果一样，则将failling添加到grade数组
+	var guideInfoLength = guideInfo.length;
+	for(var i = 0; i < guideInfoLength; i++){
+
+		for(j in guideInfo[i]){
+
+			for(k in failling){
+
+				if(failling[k][0] == guideInfo[i][j][0]){
+
+					for(l in grade){
+
+						if(grade[l].term == guideInfo[i].term){
+							var m = grade[l][0].length;
+							grade[l][0][m] = failling[k];
+							var n = guideInfo[i].length - 1;
+							grade[l][0].info = guideInfo[i][n];
+						}
+					}
+				}
+			}
+		}
+		//console.log(grade.length);
+	}
+	//console.log(grade);
+
+
+	//计算每学期的绩点
+	var finalTremNumber = grade.length;//学期总数
+	var iTermNumber = 0;//第i学期的课程数
+	var allCredit = new Array();//总学分
+	var obligatoryCredit = new Array();//必修总学分
+	var allGradeCredit = new Array();//必修成绩 * 课程学分
+	var obligatoryGradeCredit = new Array();//选修成绩 * 课程学分
+	var allGpaCredit = new Array();//必修绩点 * 课程学分
+	var obligatoryGpaCredit = new Array();//选修绩点 * 课程学分
+	var allAverage = new Array(); //平均分
+	var obligatoryAverage = new Array();//必修平均分
+	var allGpa = new Array();//绩点
+	var obligatoryGpa = new Array();
+
+	for(var i = 0; i < finalTremNumber; i++){
+		iTermNumber = grade[i][0].length;//第i学期课程总数
+		//creditTerm = grade[i].term;//学分的学期名字，用来做下标
+		//console.log(grade[i].term);
+		allCredit[i] = 0;//初始化总学分
+		obligatoryCredit[i] = 0;//初始化必修总学分
+
+		allGradeCredit[i] = 0;//初始化 必修成绩 * 课程学分
+		obligatoryGradeCredit[i] = 0;//初始化 选修成绩 * 课程学分
+
+		allGpaCredit[i] = 0;//初始化 必修绩点 * 课程学分
+		obligatoryGpaCredit[i] = 0;//初始化 选修绩点 * 课程学分
+
+		allAverage[i] = 0;
+		obligatoryAverage[i] = 0;
+		allGpa[i] = 0;
+		obligatoryGpa[i] = 0;
+
+		for(var j = 0; j < iTermNumber; j++){
+			//将形教的学分转化为0.25
+			var situation = grade[i][0][j][2].substr(0, 5);
+			if(situation == "形势与政策"){
+				grade[i][0][j][4] = 0.25;
+			}
+			// grade[i][0][j][4] 学分
+			if(grade[i][0][j][5] == '必修'){
+				//学分
+				allCredit[i] += parseFloat(grade[i][0][j][4]);
+				obligatoryCredit[i] += parseFloat(grade[i][0][j][4]);
+				//成绩*学分
+				allGradeCredit[i] += (changeGrade(grade[i][0][j][6]) * parseFloat(grade[i][0][j][4]));
+				obligatoryGradeCredit[i] += (changeGrade(grade[i][0][j][6]) * parseFloat(grade[i][0][j][4]));
+				//绩点*学分
+				allGpaCredit[i] += (changeGpa(grade[i][0][j][6]) * parseFloat(grade[i][0][j][4]));
+				obligatoryGpaCredit[i] += (changeGpa(grade[i][0][j][6]) * parseFloat(grade[i][0][j][4]));
+
+			}else{
+				allCredit[i] += changeGrade(grade[i][0][j][4]);
+				allGradeCredit[i] += (changeGrade(grade[i][0][j][6]) * parseFloat(grade[i][0][j][4]));
+				allGpaCredit[i] += (changeGpa(grade[i][0][j][6]) * parseFloat(grade[i][0][j][4])); parseFloat
+			}
+		}
+
+		
+		if(allCredit[i] == 0){
+			allAverage[i] = 0;
+			allGpa[i] = 0;
+		}else{
+			allAverage[i] = fomatFloat(allGradeCredit[i] / allCredit[i]); //平均分
+			allGpa[i] = fomatFloat(allGpaCredit[i] / allCredit[i]);	//绩点
+		}
+
+		if(obligatoryCredit[i] == 0){
+			obligatoryAverage[i] = 0;
+			obligatoryGpa[i] = 0;
+		}else{
+			obligatoryAverage[i] = fomatFloat(obligatoryGradeCredit[i] / obligatoryCredit[i]);	//必修平均分
+			obligatoryGpa[i] = fomatFloat(obligatoryGpaCredit[i] / obligatoryCredit[i]); //必修绩点
+		}
+	}
+
+	//console.log(obligatoryGradeCredit);
+	//console.log(obligatoryGpaCredit);
+	 //console.log(allCredit);
+	// console.log(obligatoryCredit);
+	 //console.log(allGradeCredit);
+	// console.log(obligatoryGradeCredit);
+	// console.log(allGpaCredit);
+	// console.log(obligatoryGpaCredit);
+	// console.log(allAverage);
+	// console.log(obligatoryAverage);
+	// console.log(allGpa);
+	// console.log(obligatoryGpa);
+
+	var finalGradeLength = grade.length;
+	for(var i = 0; i < finalGradeLength; i++){
+		grade[i]['allAverage'] = allAverage[i];
+		grade[i]['obligatoryAverage'] = obligatoryAverage[i];
+		grade[i]['allGpa'] = allGpa[i];
+		grade[i]['obligatoryGpa'] = obligatoryGpa[i];
+		//grade[i]['info'][0] = grade[i]['info'][0].split(' ');
+	}
+
+	console.log(grade);
+
+});
+</script>
+{subtemplate common/header}
+

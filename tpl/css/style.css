@@ -1,0 +1,17 @@
+.cu-header {
+	margin-top: 50px;
+	margin-bottom: 20px;
+}
+.cu-h1 {
+	height: 20px;
+}
+.cu-center {
+	text-align: center;
+}
+.cu-footer {
+	margin-top: 50px;
+	margin-bottom: 20px;
+}
+.cu-error {
+	color: #F00;
+}
