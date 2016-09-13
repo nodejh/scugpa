@@ -1,3 +1,21 @@
+## Link
+
+ONLINE: [http://gpa.fyscu.com](http://gpa.fyscu.com)
+
+TEST: [http://gpa.nodejh.com](http://gpa.nodejh.com)
+
+## Quick Start
+
+```
+$ git clone https://github.com/nodejh/scugpa
+$ cd scugpa
+$ npm install
+$ npm start
+```
+
+Then open `localhost3003` in youer browser.
+
+
 ## 计算方法
 
 加权平均分 = ∑(成绩 * 课程学分) / ∑课程学分
