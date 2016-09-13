@@ -4,7 +4,7 @@ import { Icon } from 'react-fa';
 import Dialog from 'material-ui/Dialog';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import FlatButton from 'material-ui/FlatButton';
-import { caculate } from './../utils/caculate';
+import CaculateFunction from './CaculateFunction';
 
 
 const styles = {
@@ -59,7 +59,7 @@ class CaculateGrade extends Component {
     });
     console.log('caculate grade: ', grade);
     if (grade.length > 0) {
-      const caculateResult = caculate(grade);
+      const caculateResult = CaculateFunction.caculate(grade);
       console.log(caculateResult);
       this.setState({
         caculateResult: caculateResult,

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-import { changeGradeToPoint } from './../utils/caculate';
-
+import CaculateFunction from './CaculateFunction';
 
 const styles = {
   borderBottom: {
@@ -105,7 +104,7 @@ class CurrentTerm extends Component {
             <TableRowColumn style={styles.tableRowColumn15}>{item.courseProperty}</TableRowColumn>
             <TableRowColumn style={styles.tableRowColumn15}>{item.grade}</TableRowColumn>
             <TableRowColumn style={styles.tableRowColumn15}>
-              {changeGradeToPoint(item.grade)}
+              {CaculateFunction.changeGradeToPoint(item.grade)}
             </TableRowColumn>
           </TableRow>
         );

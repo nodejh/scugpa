@@ -10,7 +10,7 @@ import CurrentTerm from './CurrentTerm';
 import AllTerm from './AllTerm';
 import Tips from './Tips';
 import CaculateGrade from './CaculateGrade';
-import ArrayOperate from './../utils/array';
+import ArrayFunction from './ArrayFunction';
 
 
 const URL_GET_GRADE = '/grade';
@@ -154,10 +154,10 @@ class Main extends Component {
     // this.setSelectedRowsData();
     // 合并为一维数组后的被选中的allPass 中的成绩
     const selectedAllPassDataArray =
-      ArrayOperate.reduceDimension(selectedAllPassData);
+      ArrayFunction.reduceDimension(selectedAllPassData);
     const selectedCurrentFailData = this.state.selectedCurrentFailData;
     const selectedBeforeFailData = this.state.selectedBeforeFailData;
-    const selectedRowsData = ArrayOperate.reduceDimension(
+    const selectedRowsData = ArrayFunction.reduceDimension(
       [selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData]);
     console.log('设置被选中的成绩 allPass...');
     console.log(selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData);
@@ -181,10 +181,10 @@ class Main extends Component {
     // });
     console.log('selectedCurrentFailData: ', grade);
     // this.setSelectedRowsData();
-    const selectedAllPassData = ArrayOperate.reduceDimension(this.state.selectedAllPassData);
+    const selectedAllPassData = ArrayFunction.reduceDimension(this.state.selectedAllPassData);
     const selectedCurrentFailData = grade;
     const selectedBeforeFailData = this.state.selectedBeforeFailData;
-    const selectedRowsData = ArrayOperate.reduceDimension(
+    const selectedRowsData = ArrayFunction.reduceDimension(
       [selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
     console.log('设置被选中的成绩...');
     console.log(selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData);
@@ -208,10 +208,10 @@ class Main extends Component {
     // });
     console.log('selectedBeforeFailData: ', grade);
     // this.setSelectedRowsData();
-    const selectedAllPassData = ArrayOperate.reduceDimension(this.state.selectedAllPassData);
+    const selectedAllPassData = ArrayFunction.reduceDimension(this.state.selectedAllPassData);
     const selectedCurrentFailData = this.state.selectedCurrentFailData;
     const selectedBeforeFailData = grade;
-    const selectedRowsData = ArrayOperate.reduceDimension(
+    const selectedRowsData = ArrayFunction.reduceDimension(
       [selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
     console.log('设置被选中的成绩...');
     console.log(selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData);
@@ -221,24 +221,6 @@ class Main extends Component {
       selectedRowsData: selectedRowsData
     });
   }
-
-
-  /**
-   * 设置被选中的成绩
-   */
-  // setSelectedRowsData() {
-  //   const selectedAllPassData = ArrayOperate.reduceDimension(this.state.getSelectedAllPassData);
-  //   const selectedCurrentFailData = this.state.selectedCurrentFailData;
-  //   const selectedBeforeFailData = this.state.selectedBeforeFailData;
-  //   const selectedRowsData = ArrayOperate.reduceDimension(
-  //     [selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
-  //   console.log('设置被选中的成绩...');
-  //   console.log(selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData);
-  //   console.log('selectedRowsData: ', selectedRowsData);
-  //   this.setState({
-  //     selectedRowsData: selectedRowsData
-  //   });
-  // }
 
 
   render() {
