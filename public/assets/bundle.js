@@ -34285,9 +34285,17 @@
 
 	var _AllTerm2 = _interopRequireDefault(_AllTerm);
 
+	var _Tips = __webpack_require__(542);
+
+	var _Tips2 = _interopRequireDefault(_Tips);
+
 	var _CaculateGrade = __webpack_require__(517);
 
 	var _CaculateGrade2 = _interopRequireDefault(_CaculateGrade);
+
+	var _array = __webpack_require__(543);
+
+	var _array2 = _interopRequireDefault(_array);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34333,13 +34341,19 @@
 	      open: false,
 	      title: '',
 	      slideIndex: 0,
-	      selectedRowsData: []
-	    };
+	      selectedRowsData: [], // 被选中的所有成绩
+	      selectedAllPassData: [], // 二维数组。一维是被选中的所有及格成绩的学期数组。二维是每学期中被选中的
+	      selectedCurrentFailData: [], // 尚不及格
+	      selectedBeforeFailData: [] };
 	    _this.getGrade = _this.getGrade.bind(_this);
 	    _this.handleOpenDialog = _this.handleOpenDialog.bind(_this);
 	    _this.handleCloseDialog = _this.handleCloseDialog.bind(_this);
 	    _this.handleChangeTab = _this.handleChangeTab.bind(_this);
 	    _this.getSelectedRowsData = _this.getSelectedRowsData.bind(_this);
+	    _this.getSelectedAllPassData = _this.getSelectedAllPassData.bind(_this);
+	    _this.getSelectedCurrentFailData = _this.getSelectedCurrentFailData.bind(_this);
+	    _this.getSelectedBeforeFailData = _this.getSelectedBeforeFailData.bind(_this);
+	    // this.setSelectedRowsData = this.setSelectedRowsData.bind(this);
 	    return _this;
 	  }
 
@@ -34407,17 +34421,126 @@
 
 	    /**
 	     * 获取被选中的成绩
+	     * @param {array} grade 被选中的成绩，主要用于当前学期的所选中的成绩的计算
 	     */
 
 	  }, {
 	    key: 'getSelectedRowsData',
 	    value: function getSelectedRowsData(grade) {
-	      console.log('main Page getSelectedRowsData...');
+	      // console.log('main Page getSelectedRowsData...');
 	      console.log(grade);
 	      this.setState({
 	        selectedRowsData: grade
 	      });
 	    }
+
+	    /**
+	     * 获取被选中的 allPass 中的成绩
+	     * @param {string} grade 被选中的allPass 中的成绩一维数组
+	     * @param {number} termIndex 被选中的学期的 index
+	     */
+
+	  }, {
+	    key: 'getSelectedAllPassData',
+	    value: function getSelectedAllPassData(grade, termIndex) {
+	      console.log('main Page getSelectedAllPassData...');
+	      console.log(grade);
+	      console.log(termIndex);
+	      var selectedAllPassData = this.state.selectedAllPassData;
+	      selectedAllPassData[termIndex] = grade;
+	      // this.setState({
+	      //   selectedAllPassData: selectedAllPassData,
+	      // });
+	      console.log('selectedAllPassData: ', selectedAllPassData);
+	      // this.setSelectedRowsData();
+	      // 合并为一维数组后的被选中的allPass 中的成绩
+	      var selectedAllPassDataArray = _array2.default.reduceDimension(selectedAllPassData);
+	      var selectedCurrentFailData = this.state.selectedCurrentFailData;
+	      var selectedBeforeFailData = this.state.selectedBeforeFailData;
+	      var selectedRowsData = _array2.default.reduceDimension([selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData]);
+	      console.log('设置被选中的成绩...');
+	      console.log(selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData);
+	      console.log('selectedRowsData: ', selectedRowsData);
+	      this.setState({
+	        selectedAllPassData: selectedAllPassData,
+	        selectedRowsData: selectedRowsData
+	      });
+	    }
+
+	    /**
+	     * 获取被选中的 尚不及格 成绩
+	     * @param {array} grade 被选中的尚不及格成绩一维数组
+	     */
+
+	  }, {
+	    key: 'getSelectedCurrentFailData',
+	    value: function getSelectedCurrentFailData(grade) {
+	      console.log('main Page getSelectedCurrentFailData...');
+	      // console.log(grade);
+	      // this.setState({
+	      //   selectedCurrentFailData: grade,
+	      // });
+	      console.log('selectedCurrentFailData: ', grade);
+	      // this.setSelectedRowsData();
+	      var selectedAllPassData = _array2.default.reduceDimension(this.state.getSelectedAllPassData);
+	      var selectedCurrentFailData = grade;
+	      var selectedBeforeFailData = this.state.selectedBeforeFailData;
+	      var selectedRowsData = _array2.default.reduceDimension([selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
+	      console.log('设置被选中的成绩...');
+	      console.log(selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData);
+	      console.log('selectedRowsData: ', selectedRowsData);
+	      this.setState({
+	        selectedCurrentFailData: grade,
+	        selectedRowsData: selectedRowsData
+	      });
+	    }
+
+	    /**
+	     * 获取被选中的 曾不及格 成绩
+	     * @param {array} grade 被选中的曾不及格成绩一维数组
+	     */
+
+	  }, {
+	    key: 'getSelectedBeforeFailData',
+	    value: function getSelectedBeforeFailData(grade) {
+	      console.log('main Page getSelectedBeforeFFailData...');
+	      // console.log(grade);
+	      // this.setState({
+	      //   selectedBeforeFailData: grade,
+	      // });
+	      console.log('selectedBeforeFailData: ', grade);
+	      // this.setSelectedRowsData();
+	      var selectedAllPassData = _array2.default.reduceDimension(this.state.getSelectedAllPassData);
+	      var selectedCurrentFailData = this.state.selectedCurrentFailData;
+	      var selectedBeforeFailData = grade;
+	      var selectedRowsData = _array2.default.reduceDimension([selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
+	      console.log('设置被选中的成绩...');
+	      console.log(selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData);
+	      console.log('selectedRowsData: ', selectedRowsData);
+	      this.setState({
+	        selectedBeforeFailData: grade,
+	        selectedRowsData: selectedRowsData
+	      });
+	    }
+
+	    /**
+	     * 设置被选中的成绩
+	     */
+	    // setSelectedRowsData() {
+	    //   const selectedAllPassData = ArrayOperate.reduceDimension(this.state.getSelectedAllPassData);
+	    //   const selectedCurrentFailData = this.state.selectedCurrentFailData;
+	    //   const selectedBeforeFailData = this.state.selectedBeforeFailData;
+	    //   const selectedRowsData = ArrayOperate.reduceDimension(
+	    //     [selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
+	    //   console.log('设置被选中的成绩...');
+	    //   console.log(selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData);
+	    //   console.log('selectedRowsData: ', selectedRowsData);
+	    //   this.setState({
+	    //     selectedRowsData: selectedRowsData
+	    //   });
+	    // }
+
+
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -34430,15 +34553,27 @@
 
 	      var currentTermDom = ''; // 当前学期
 	      var allTermDom = ''; // 所有学期成绩(及格+不及格)
-	      // let tipsDom = ''; // 使用前必读
+	      var tipsDom = ''; // 使用前必读
 	      if (this.state.data) {
-	        currentTermDom = _react2.default.createElement(_CurrentTerm2.default, {
-	          currentTerm: this.state.data.currentTerm,
-	          getSelectedRowsData: this.getSelectedRowsData });
-	        allTermDom = _react2.default.createElement(_AllTerm2.default, {
-	          allPass: this.state.allPass,
-	          allFail: this.state.allFail,
-	          getSelectedRowsData: this.getSelectedRowsData });
+	        switch (this.state.slideIndex) {
+	          case 0:
+	            currentTermDom = _react2.default.createElement(_CurrentTerm2.default, {
+	              currentTerm: this.state.data.currentTerm,
+	              getSelectedRowsData: this.getSelectedRowsData });
+	            break;
+	          case 1:
+	            allTermDom = _react2.default.createElement(_AllTerm2.default, {
+	              allPass: this.state.data.allPass,
+	              allFail: this.state.data.allFail,
+	              getSelectedAllPassData: this.getSelectedAllPassData,
+	              getSelectedCurrentFailData: this.getSelectedCurrentFailData,
+	              getSelectedBeforeFailData: this.getSelectedBeforeFailData });
+	            break;
+	          case 2:
+	            tipsDom = _react2.default.createElement(_Tips2.default, null);
+	            break;
+	          default:
+	        }
 	      }
 
 	      return _react2.default.createElement(
@@ -34482,7 +34617,7 @@
 	          _react2.default.createElement(
 	            'div',
 	            { style: styles.slide },
-	            'sadfasdf'
+	            tipsDom
 	          )
 	        ),
 	        _react2.default.createElement(_Dialog2.default, {
@@ -47423,7 +47558,7 @@
 	  },
 	  paper: {
 	    boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px',
-	    margin: '10px',
+	    margin: '20px 10px',
 	    backgroundColor: 'red'
 	  },
 	  heightAuto: {
@@ -47455,7 +47590,7 @@
 	      // currentTerm: this.props.currentTerm,
 	      // selectedRowsData: []
 	    };
-	    console.log('init CurrentTerm...');
+	    // console.log('init CurrentTerm...');
 	    _this.onRowSelection = _this.onRowSelection.bind(_this);
 	    return _this;
 	  }
@@ -47479,6 +47614,7 @@
 	  }, {
 	    key: 'onRowSelection',
 	    value: function onRowSelection(selectedRows) {
+	      // const gradeList = this.props.currentTerm.gradeList;
 	      var gradeList = this.initGradeListNoSelected();
 	      var selectedRowsData = []; // 被选中的所有行的数据
 	      if ((typeof selectedRows === 'undefined' ? 'undefined' : _typeof(selectedRows)) === 'object') {
@@ -50589,7 +50725,7 @@
 	  },
 	  paper: {
 	    boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px',
-	    margin: '10px',
+	    margin: '20px 10px',
 	    backgroundColor: 'red'
 	  },
 	  heightAuto: {
@@ -50617,35 +50753,112 @@
 
 	    var _this = _possibleConstructorReturn(this, (AllTerm.__proto__ || Object.getPrototypeOf(AllTerm)).call(this, props));
 
-	    _this.state = {
-	      currentTerm: _this.props.currentTerm,
-	      selectedRowsData: []
-	    };
+	    _this.state = {};
 	    console.log('init all term...');
-	    _this.onRowSelection = _this.onRowSelection.bind(_this);
+	    _this.onTermRowSelection = _this.onTermRowSelection.bind(_this);
 	    return _this;
 	  }
 
 	  /**
-	   * 初始化 gradeList
+	   * 初始化所有学期通过的课程中的被选中状态为 false
 	   * 将其 selected 设置为 false
 	   */
 
 
 	  _createClass(AllTerm, [{
-	    key: 'initGradeListNoSelected',
-	    value: function initGradeListNoSelected() {
-	      var gradeList = this.state.currentTerm.gradeList.map(function (item) {
+	    key: 'initAllPassNoSelected',
+	    value: function initAllPassNoSelected() {
+	      var termList = this.props.allPass.gradeList.map(function (term) {
+	        var currentTerm = term;
+	        currentTerm.list = term.list.map(function (item) {
+	          var grade = item;
+	          grade.selected = false;
+	          return grade;
+	        });
+	        return currentTerm;
+	      });
+	      console.log('initAllPassNoSelected: ', termList);
+	      return termList;
+	    }
+
+	    /**
+	     * 初始化所有尚不及格课程中的被选中状态为 false
+	     * 将其 selected 设置为 false
+	     */
+
+	  }, {
+	    key: 'initCurrentFailNoSelected',
+	    value: function initCurrentFailNoSelected() {
+	      var gradeList = this.props.allFail.current.map(function (item) {
 	        var grade = item;
 	        grade.selected = false;
 	        return grade;
 	      });
 	      return gradeList;
 	    }
+
+	    /**
+	     * 初始化所有曾不及格课程中的被选中状态为 false
+	     * 将其 selected 设置为 false
+	     */
+
 	  }, {
-	    key: 'onRowSelection',
-	    value: function onRowSelection(selectedRows) {
-	      var gradeList = this.initGradeListNoSelected();
+	    key: 'initBeforeFailNoSelected',
+	    value: function initBeforeFailNoSelected() {
+	      var gradeList = this.props.allFail.before.map(function (item) {
+	        var grade = item;
+	        grade.selected = false;
+	        return grade;
+	      });
+	      return gradeList;
+	    }
+
+	    /**
+	     * 点击某个学期中的行 Row
+	     * @param {array} 被选中的行  [0,1,3] 选中第 0,1,3 行
+	     * @param {number} 被选中的学期 如 0 表示数组中第 0 个学期
+	     */
+
+	  }, {
+	    key: 'onTermRowSelection',
+	    value: function onTermRowSelection(selectedRows, termIndex) {
+	      console.log('onTermRowSelection....');
+	      console.log('index: ', termIndex);
+	      var termList = this.initAllPassNoSelected();
+	      var selectedRowsData = []; // 被选中的所有行的数据
+	      if ((typeof selectedRows === 'undefined' ? 'undefined' : _typeof(selectedRows)) === 'object') {
+	        // 选中的是一个数组，且数组长度大于0
+	        console.log('选中的是一个数组');
+	        selectedRowsData = selectedRows.map(function (item) {
+	          // 将 currentTerm.gradeList 中对应的 selected 设置为 true
+	          termList[termIndex].list[item].selected = true;
+	          // 返回被选中的 gradeList
+	          return termList[termIndex].list[item];
+	        });
+	      } else if (selectedRows === 'all') {
+	        // 选中了所有 row
+	        console.log('选中了所有 row...');
+	        selectedRowsData = termList[termIndex].list;
+	      } else if (selectedRows === 'none') {
+	        // 取消选中所有行
+	        console.log('取消选中所有行...');
+	        selectedRowsData = [];
+	      }
+	      console.log('selectedRowsData: ', selectedRowsData);
+	      // 调用父组建的 getSelectedRowsData
+	      this.props.getSelectedAllPassData(selectedRowsData, termIndex);
+	    }
+
+	    /**
+	     * 点击尚不及格中的行 Row
+	     * @param {array} selectedRows 被选中的行  [0,1,3] 选中第 0,1,3 行
+	     */
+
+	  }, {
+	    key: 'onCurrentFailRowSelection',
+	    value: function onCurrentFailRowSelection(selectedRows) {
+	      var gradeList = this.initCurrentFailNoSelected();
+	      console.log('onCurrentFailRowSelection gradeList: ', gradeList);
 	      var selectedRowsData = []; // 被选中的所有行的数据
 	      if ((typeof selectedRows === 'undefined' ? 'undefined' : _typeof(selectedRows)) === 'object') {
 	        // 选中的是一个数组，且数组长度大于0
@@ -50666,18 +50879,203 @@
 	        selectedRowsData = [];
 	      }
 	      console.log('selectedRowsData: ', selectedRowsData);
-	      // 调用父组建的 getSelectedRowsData
-	      this.props.getSelectedRowsData(selectedRowsData);
+	      // 调用父组建的 getSelectedCurrentFailData
+	      this.props.getSelectedCurrentFailData(selectedRowsData);
+	    }
+
+	    /**
+	     * 点击曾不及格中的行 Row
+	     * @param {array} selectedRows 被选中的行  [0,1,3] 选中第 0,1,3 行
+	     */
+
+	  }, {
+	    key: 'onBeforeFailRowSelection',
+	    value: function onBeforeFailRowSelection(selectedRows) {
+	      var gradeList = this.initBeforeFailNoSelected();
+	      var selectedRowsData = []; // 被选中的所有行的数据
+	      if ((typeof selectedRows === 'undefined' ? 'undefined' : _typeof(selectedRows)) === 'object') {
+	        // 选中的是一个数组，且数组长度大于0
+	        console.log('选中的是一个数组');
+	        selectedRowsData = selectedRows.map(function (item) {
+	          // 将 currentTerm.gradeList 中对应的 selected 设置为 true
+	          gradeList[item].selected = true;
+	          // 返回被选中的 gradeList
+	          return gradeList[item];
+	        });
+	      } else if (selectedRows === 'all') {
+	        // 选中了所有 row
+	        console.log('选中了所有 row...');
+	        selectedRowsData = gradeList;
+	      } else if (selectedRows === 'none') {
+	        // 取消选中所有行
+	        console.log('取消选中所有行...');
+	        selectedRowsData = [];
+	      }
+	      console.log('selectedRowsData: ', selectedRowsData);
+	      // 调用父组建的 getSelectedBeforeFailData
+	      this.props.getSelectedBeforeFailData(selectedRowsData);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this3 = this;
 
-	      var tableRowsDom = '';
-	      var averageDom = '';
-	      if (this.state.currentTerm) {
-	        tableRowsDom = this.state.currentTerm.gradeList.map(function (item, index) {
+	      // 所有及格成绩（所有学期的成绩）
+	      var passDom = '';
+	      if (this.props.allPass) {
+	        passDom = this.props.allPass.gradeList.map(function (term, termIndex) {
+	          var _this2 = this;
+
+	          var tableRowsPassDom = '';
+	          var averagePassDom = '';
+	          tableRowsPassDom = term.list.map(function (item, index) {
+	            return _react2.default.createElement(
+	              _Table.TableRow,
+	              { key: index, selected: item.selected, style: styles.heightAuto },
+	              _react2.default.createElement(
+	                _Table.TableRowColumn,
+	                { style: styles.tableRowColumn40 },
+	                item.courseName
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableRowColumn,
+	                { style: styles.tableRowColumn15 },
+	                item.credit
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableRowColumn,
+	                { style: styles.tableRowColumn15 },
+	                item.courseProperty
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableRowColumn,
+	                { style: styles.tableRowColumn15 },
+	                item.grade
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableRowColumn,
+	                { style: styles.tableRowColumn15 },
+	                (0, _caculate.changeGradeToPoint)(item.grade)
+	              )
+	            );
+	          });
+	          averagePassDom = _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	              _Table.Table,
+	              { selectable: false },
+	              _react2.default.createElement(
+	                _Table.TableBody,
+	                { displayRowCheckbox: false },
+	                _react2.default.createElement(
+	                  _Table.TableRow,
+	                  { displayBorder: true },
+	                  _react2.default.createElement(
+	                    _Table.TableRowColumn,
+	                    { colSpan: '2', style: styles.textAlignCenter },
+	                    _react2.default.createElement(
+	                      'h3',
+	                      null,
+	                      term.term
+	                    )
+	                  )
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableRow,
+	                  { displayBorder: false },
+	                  _react2.default.createElement(
+	                    _Table.TableRowColumn,
+	                    null,
+	                    '全部绩点: ',
+	                    term.averageGpa
+	                  ),
+	                  _react2.default.createElement(
+	                    _Table.TableRowColumn,
+	                    null,
+	                    '必修绩点: ',
+	                    term.averageGpaObligatory
+	                  )
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableRow,
+	                  { displayBorder: false, style: styles.borderBottom },
+	                  _react2.default.createElement(
+	                    _Table.TableRowColumn,
+	                    null,
+	                    '全部平均分: ',
+	                    term.averageGrade
+	                  ),
+	                  _react2.default.createElement(
+	                    _Table.TableRowColumn,
+	                    null,
+	                    '必修平均分: ',
+	                    term.averageGradeObligatory
+	                  )
+	                )
+	              )
+	            )
+	          );
+	          return _react2.default.createElement(
+	            'div',
+	            { style: styles.paper, key: termIndex },
+	            averagePassDom,
+	            _react2.default.createElement(
+	              _Table.Table,
+	              { multiSelectable: true, fixedFooter: true,
+	                onRowSelection: function onRowSelection(selectedRows) {
+	                  return _this2.onTermRowSelection(selectedRows, termIndex);
+	                }
+	              },
+	              _react2.default.createElement(
+	                _Table.TableHeader,
+	                { enableSelectAll: true, displaySelectAll: true },
+	                _react2.default.createElement(
+	                  _Table.TableRow,
+	                  null,
+	                  _react2.default.createElement(
+	                    _Table.TableHeaderColumn,
+	                    { style: { width: '40%' } },
+	                    '课程名'
+	                  ),
+	                  _react2.default.createElement(
+	                    _Table.TableHeaderColumn,
+	                    { style: { width: '15%' } },
+	                    '学分'
+	                  ),
+	                  _react2.default.createElement(
+	                    _Table.TableHeaderColumn,
+	                    { style: { width: '15%' } },
+	                    '课程属性'
+	                  ),
+	                  _react2.default.createElement(
+	                    _Table.TableHeaderColumn,
+	                    { style: { width: '15%' } },
+	                    '成绩'
+	                  ),
+	                  _react2.default.createElement(
+	                    _Table.TableHeaderColumn,
+	                    { style: { width: '15%' } },
+	                    '绩点'
+	                  )
+	                )
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableBody,
+	                { deselectOnClickaway: false },
+	                tableRowsPassDom
+	              )
+	            )
+	          );
+	        }.bind(this));
+	      }
+
+	      // 尚不及格
+	      var currentFailDom = '';
+	      if (this.props.allFail && this.props.allFail.current) {
+	        var averageDom = '';
+	        var tableRowsDom = '';
+	        tableRowsDom = this.props.allFail.current.map(function (item, index) {
 	          return _react2.default.createElement(
 	            _Table.TableRow,
 	            { key: index, selected: item.selected, style: styles.heightAuto },
@@ -50699,16 +51097,15 @@
 	            _react2.default.createElement(
 	              _Table.TableRowColumn,
 	              { style: styles.tableRowColumn15 },
-	              item.grade
+	              item.examDate
 	            ),
 	            _react2.default.createElement(
 	              _Table.TableRowColumn,
 	              { style: styles.tableRowColumn15 },
-	              (0, _caculate.changeGradeToPoint)(item.grade)
+	              item.grade
 	            )
 	          );
 	        });
-
 	        averageDom = _react2.default.createElement(
 	          'div',
 	          null,
@@ -50720,58 +51117,21 @@
 	              { displayRowCheckbox: false },
 	              _react2.default.createElement(
 	                _Table.TableRow,
-	                { displayBorder: true },
+	                { displayBorder: true, style: styles.borderBottom },
 	                _react2.default.createElement(
 	                  _Table.TableRowColumn,
 	                  { colSpan: '2', style: styles.textAlignCenter },
 	                  _react2.default.createElement(
 	                    'h3',
 	                    null,
-	                    '本学期成绩'
+	                    '尚不及格'
 	                  )
-	                )
-	              ),
-	              _react2.default.createElement(
-	                _Table.TableRow,
-	                { displayBorder: false },
-	                _react2.default.createElement(
-	                  _Table.TableRowColumn,
-	                  null,
-	                  '全部绩点: ',
-	                  this.state.currentTerm.averageGpa
-	                ),
-	                _react2.default.createElement(
-	                  _Table.TableRowColumn,
-	                  null,
-	                  '必修绩点: ',
-	                  this.state.currentTerm.averageGpaObligatory
-	                )
-	              ),
-	              _react2.default.createElement(
-	                _Table.TableRow,
-	                { displayBorder: false, style: styles.borderBottom },
-	                _react2.default.createElement(
-	                  _Table.TableRowColumn,
-	                  null,
-	                  '全部平均分: ',
-	                  this.state.currentTerm.averageGrade
-	                ),
-	                _react2.default.createElement(
-	                  _Table.TableRowColumn,
-	                  null,
-	                  '必修平均分: ',
-	                  this.state.currentTerm.averageGradeObligatory
 	                )
 	              )
 	            )
 	          )
 	        );
-	      }
-
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
+	        currentFailDom = _react2.default.createElement(
 	          'div',
 	          { style: styles.paper },
 	          averageDom,
@@ -50779,7 +51139,7 @@
 	            _Table.Table,
 	            { multiSelectable: true, fixedFooter: true,
 	              onRowSelection: function onRowSelection(selectedRows) {
-	                return _this2.onRowSelection(selectedRows);
+	                return _this3.onCurrentFailRowSelection(selectedRows);
 	              }
 	            },
 	            _react2.default.createElement(
@@ -50806,12 +51166,12 @@
 	                _react2.default.createElement(
 	                  _Table.TableHeaderColumn,
 	                  { style: { width: '15%' } },
-	                  '成绩'
+	                  '考试时间'
 	                ),
 	                _react2.default.createElement(
 	                  _Table.TableHeaderColumn,
 	                  { style: { width: '15%' } },
-	                  '绩点'
+	                  '成绩'
 	                )
 	              )
 	            ),
@@ -50821,7 +51181,129 @@
 	              tableRowsDom
 	            )
 	          )
-	        )
+	        );
+	      }
+
+	      // 曾不及格
+	      var beforeFailDom = '';
+	      if (this.props.allFail && this.props.allFail.before) {
+	        var _averageDom = '';
+	        var _tableRowsDom = '';
+	        _tableRowsDom = this.props.allFail.before.map(function (item, index) {
+	          return _react2.default.createElement(
+	            _Table.TableRow,
+	            { key: index, selected: item.selected, style: styles.heightAuto },
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn40 },
+	              item.courseName
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn15 },
+	              item.credit
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn15 },
+	              item.courseProperty
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn15 },
+	              item.examDate
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn15 },
+	              item.grade
+	            )
+	          );
+	        });
+	        _averageDom = _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            _Table.Table,
+	            { selectable: false },
+	            _react2.default.createElement(
+	              _Table.TableBody,
+	              { displayRowCheckbox: false },
+	              _react2.default.createElement(
+	                _Table.TableRow,
+	                { displayBorder: true, style: styles.borderBottom },
+	                _react2.default.createElement(
+	                  _Table.TableRowColumn,
+	                  { colSpan: '2', style: styles.textAlignCenter },
+	                  _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    '曾不及格'
+	                  )
+	                )
+	              )
+	            )
+	          )
+	        );
+	        beforeFailDom = _react2.default.createElement(
+	          'div',
+	          { style: styles.paper },
+	          _averageDom,
+	          _react2.default.createElement(
+	            _Table.Table,
+	            { multiSelectable: true, fixedFooter: true,
+	              onRowSelection: function onRowSelection(selectedRows) {
+	                return _this3.onBeforeFailRowSelection(selectedRows);
+	              }
+	            },
+	            _react2.default.createElement(
+	              _Table.TableHeader,
+	              { enableSelectAll: true, displaySelectAll: true },
+	              _react2.default.createElement(
+	                _Table.TableRow,
+	                null,
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '40%' } },
+	                  '课程名'
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '15%' } },
+	                  '学分'
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '15%' } },
+	                  '课程属性'
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '15%' } },
+	                  '考试时间'
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '15%' } },
+	                  '成绩'
+	                )
+	              )
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableBody,
+	              { deselectOnClickaway: false },
+	              _tableRowsDom
+	            )
+	          )
+	        );
+	      }
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        passDom,
+	        currentFailDom,
+	        beforeFailDom
 	      );
 	    }
 	  }]);
@@ -53534,6 +54016,70 @@
 	};
 	exports.default = RaisedButton;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 542 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TipsDom = function (_Component) {
+	  _inherits(TipsDom, _Component);
+
+	  function TipsDom() {
+	    _classCallCheck(this, TipsDom);
+
+	    return _possibleConstructorReturn(this, (TipsDom.__proto__ || Object.getPrototypeOf(TipsDom)).apply(this, arguments));
+	  }
+
+	  _createClass(TipsDom, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        '使用前必读'
+	      );
+	    }
+	  }]);
+
+	  return TipsDom;
+	}(_react.Component);
+
+	exports.default = TipsDom;
+
+/***/ },
+/* 543 */
+/***/ function(module, exports) {
+
+	// 对数组的一些扩展操作
+
+	var reduceDimension = function(arr) {
+	  return Array.prototype.concat.apply([], arr);
+	};
+
+	module.exports = {
+	  reduceDimension
+	};
+
 
 /***/ }
 /******/ ]);

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import { changeGradeToPoint } from './../utils/caculate';
 
+
 const styles = {
   borderBottom: {
     borderBottom: '1px solid rgb(224, 224, 224)'
@@ -14,7 +15,7 @@ const styles = {
   },
   paper: {
     boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px',
-    margin: '10px',
+    margin: '20px 10px',
     backgroundColor: 'red'
   },
   heightAuto: {
@@ -42,7 +43,7 @@ class CurrentTerm extends Component {
       // currentTerm: this.props.currentTerm,
       // selectedRowsData: []
     };
-    console.log('init CurrentTerm...');
+    // console.log('init CurrentTerm...');
     this.onRowSelection = this.onRowSelection.bind(this);
   }
 
@@ -62,6 +63,7 @@ class CurrentTerm extends Component {
 
 
   onRowSelection(selectedRows) {
+    // const gradeList = this.props.currentTerm.gradeList;
     const gradeList = this.initGradeListNoSelected();
     let selectedRowsData = []; // 被选中的所有行的数据
     if (typeof selectedRows === 'object') {

@@ -8,7 +8,10 @@ import AppBarIconMenu from './AppBarIconMenu';
 import RefreshIndicatorLoading from './RefreshIndicator';
 import CurrentTerm from './CurrentTerm';
 import AllTerm from './AllTerm';
+import Tips from './Tips';
 import CaculateGrade from './CaculateGrade';
+import ArrayOperate from './../utils/array';
+
 
 const URL_GET_GRADE = '/grade';
 
@@ -45,13 +48,20 @@ class Main extends Component {
       open: false,
       title: '',
       slideIndex: 0,
-      selectedRowsData: []
+      selectedRowsData: [], // 被选中的所有成绩
+      selectedAllPassData: [], // 二维数组。一维是被选中的所有及格成绩的学期数组。二维是每学期中被选中的
+      selectedCurrentFailData: [], // 尚不及格
+      selectedBeforeFailData: [], // 曾不及格
     };
     this.getGrade = this.getGrade.bind(this);
     this.handleOpenDialog = this.handleOpenDialog.bind(this);
     this.handleCloseDialog = this.handleCloseDialog.bind(this);
     this.handleChangeTab = this.handleChangeTab.bind(this);
     this.getSelectedRowsData = this.getSelectedRowsData.bind(this);
+    this.getSelectedAllPassData = this.getSelectedAllPassData.bind(this);
+    this.getSelectedCurrentFailData = this.getSelectedCurrentFailData.bind(this);
+    this.getSelectedBeforeFailData = this.getSelectedBeforeFailData.bind(this);
+    // this.setSelectedRowsData = this.setSelectedRowsData.bind(this);
   }
 
 
@@ -114,14 +124,120 @@ class Main extends Component {
 
   /**
    * 获取被选中的成绩
+   * @param {array} grade 被选中的成绩，主要用于当前学期的所选中的成绩的计算
    */
   getSelectedRowsData(grade) {
-    console.log('main Page getSelectedRowsData...');
+    // console.log('main Page getSelectedRowsData...');
     console.log(grade);
     this.setState({
       selectedRowsData: grade
     });
   }
+
+
+  /**
+   * 获取被选中的 allPass 中的成绩
+   * @param {string} grade 被选中的allPass 中的成绩一维数组
+   * @param {number} termIndex 被选中的学期的 index
+   */
+  getSelectedAllPassData(grade, termIndex) {
+    console.log('main Page getSelectedAllPassData...');
+    console.log(grade);
+    console.log(termIndex);
+    const selectedAllPassData = this.state.selectedAllPassData;
+    selectedAllPassData[termIndex] = grade;
+    // this.setState({
+    //   selectedAllPassData: selectedAllPassData,
+    // });
+    console.log('selectedAllPassData: ', selectedAllPassData);
+    // this.setSelectedRowsData();
+    // 合并为一维数组后的被选中的allPass 中的成绩
+    const selectedAllPassDataArray =
+      ArrayOperate.reduceDimension(selectedAllPassData);
+    const selectedCurrentFailData = this.state.selectedCurrentFailData;
+    const selectedBeforeFailData = this.state.selectedBeforeFailData;
+    const selectedRowsData = ArrayOperate.reduceDimension(
+      [selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData]);
+    console.log('设置被选中的成绩...');
+    console.log(selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData);
+    console.log('selectedRowsData: ', selectedRowsData);
+    this.setState({
+      selectedAllPassData: selectedAllPassData,
+      selectedRowsData: selectedRowsData
+    });
+  }
+
+
+  /**
+   * 获取被选中的 尚不及格 成绩
+   * @param {array} grade 被选中的尚不及格成绩一维数组
+   */
+  getSelectedCurrentFailData(grade) {
+    console.log('main Page getSelectedCurrentFailData...');
+    // console.log(grade);
+    // this.setState({
+    //   selectedCurrentFailData: grade,
+    // });
+    console.log('selectedCurrentFailData: ', grade);
+    // this.setSelectedRowsData();
+    const selectedAllPassData = ArrayOperate.reduceDimension(this.state.getSelectedAllPassData);
+    const selectedCurrentFailData = grade;
+    const selectedBeforeFailData = this.state.selectedBeforeFailData;
+    const selectedRowsData = ArrayOperate.reduceDimension(
+      [selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
+    console.log('设置被选中的成绩...');
+    console.log(selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData);
+    console.log('selectedRowsData: ', selectedRowsData);
+    this.setState({
+      selectedCurrentFailData: grade,
+      selectedRowsData: selectedRowsData
+    });
+  }
+
+
+  /**
+   * 获取被选中的 曾不及格 成绩
+   * @param {array} grade 被选中的曾不及格成绩一维数组
+   */
+  getSelectedBeforeFailData(grade) {
+    console.log('main Page getSelectedBeforeFFailData...');
+    // console.log(grade);
+    // this.setState({
+    //   selectedBeforeFailData: grade,
+    // });
+    console.log('selectedBeforeFailData: ', grade);
+    // this.setSelectedRowsData();
+    const selectedAllPassData = ArrayOperate.reduceDimension(this.state.getSelectedAllPassData);
+    const selectedCurrentFailData = this.state.selectedCurrentFailData;
+    const selectedBeforeFailData = grade;
+    const selectedRowsData = ArrayOperate.reduceDimension(
+      [selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
+    console.log('设置被选中的成绩...');
+    console.log(selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData);
+    console.log('selectedRowsData: ', selectedRowsData);
+    this.setState({
+      selectedBeforeFailData: grade,
+      selectedRowsData: selectedRowsData
+    });
+  }
+
+
+  /**
+   * 设置被选中的成绩
+   */
+  // setSelectedRowsData() {
+  //   const selectedAllPassData = ArrayOperate.reduceDimension(this.state.getSelectedAllPassData);
+  //   const selectedCurrentFailData = this.state.selectedCurrentFailData;
+  //   const selectedBeforeFailData = this.state.selectedBeforeFailData;
+  //   const selectedRowsData = ArrayOperate.reduceDimension(
+  //     [selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
+  //   console.log('设置被选中的成绩...');
+  //   console.log(selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData);
+  //   console.log('selectedRowsData: ', selectedRowsData);
+  //   this.setState({
+  //     selectedRowsData: selectedRowsData
+  //   });
+  // }
 
 
   render() {
@@ -136,19 +252,33 @@ class Main extends Component {
 
     let currentTermDom = ''; // 当前学期
     let allTermDom = ''; // 所有学期成绩(及格+不及格)
-    // let tipsDom = ''; // 使用前必读
+    let tipsDom = ''; // 使用前必读
     if (this.state.data) {
-      currentTermDom = (
-        <CurrentTerm
-          currentTerm={this.state.data.currentTerm}
-          getSelectedRowsData={this.getSelectedRowsData} />
-      );
-      allTermDom = (
-        <AllTerm
-          allPass={this.state.allPass}
-          allFail={this.state.allFail}
-          getSelectedRowsData={this.getSelectedRowsData} />
-      );
+      switch (this.state.slideIndex) {
+        case 0:
+          currentTermDom = (
+            <CurrentTerm
+              currentTerm={this.state.data.currentTerm}
+              getSelectedRowsData={this.getSelectedRowsData} />
+          );
+          break;
+        case 1:
+          allTermDom = (
+            <AllTerm
+              allPass={this.state.data.allPass}
+              allFail={this.state.data.allFail}
+              getSelectedAllPassData={this.getSelectedAllPassData}
+              getSelectedCurrentFailData={this.getSelectedCurrentFailData}
+              getSelectedBeforeFailData={this.getSelectedBeforeFailData} />
+          );
+          break;
+        case 2:
+          tipsDom = (
+            <Tips />
+          );
+          break;
+        default:
+      }
     }
 
     return (
@@ -183,7 +313,7 @@ class Main extends Component {
             {allTermDom}
           </div>
           <div style={styles.slide}>
-            sadfasdf
+            {tipsDom}
           </div>
         </SwipeableViews>
 

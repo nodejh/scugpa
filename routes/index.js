@@ -293,6 +293,8 @@ router.get('/grade', function(req, res) {
           gradeList.sumCreditObligatory = caculateResult.sumCreditObligatory;
           allPassGradeList.gradeList.push(gradeList);
         });
+        // 翻转数组，按学期倒序排列
+        allPassGradeList.gradeList.reverse();
         ep.emit('allPass', [errAllPass, allPassGradeList]);
       }
     }
