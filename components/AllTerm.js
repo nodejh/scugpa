@@ -35,13 +35,14 @@ const styles = {
 };
 
 
-class CurrentTerm extends Component {
+class AllTerm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currentTerm: this.props.currentTerm,
       selectedRowsData: []
     };
+    console.log('init all term...');
     this.onRowSelection = this.onRowSelection.bind(this);
   }
 
@@ -88,8 +89,6 @@ class CurrentTerm extends Component {
 
 
   render() {
-    console.log('this state', this.state);
-
     let tableRowsDom = '';
     let averageDom = '';
     if (this.state.currentTerm) {
@@ -165,4 +164,4 @@ class CurrentTerm extends Component {
 }
 
 
-export default CurrentTerm;
+export default AllTerm;

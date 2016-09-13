@@ -75,7 +75,7 @@
 
 	var _Main2 = _interopRequireDefault(_Main);
 
-	var _Login = __webpack_require__(534);
+	var _Login = __webpack_require__(533);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
@@ -34281,11 +34281,11 @@
 
 	var _CurrentTerm2 = _interopRequireDefault(_CurrentTerm);
 
-	var _Test = __webpack_require__(519);
+	var _AllTerm = __webpack_require__(516);
 
-	var _Test2 = _interopRequireDefault(_Test);
+	var _AllTerm2 = _interopRequireDefault(_AllTerm);
 
-	var _CaculateGrade = __webpack_require__(543);
+	var _CaculateGrade = __webpack_require__(517);
 
 	var _CaculateGrade2 = _interopRequireDefault(_CaculateGrade);
 
@@ -34429,11 +34429,15 @@
 	      })];
 
 	      var currentTermDom = ''; // 当前学期
-	      // let allGradeDom = ''; // 所有成绩(及格+不及格)
+	      var allTermDom = ''; // 所有学期成绩(及格+不及格)
 	      // let tipsDom = ''; // 使用前必读
 	      if (this.state.data) {
 	        currentTermDom = _react2.default.createElement(_CurrentTerm2.default, {
 	          currentTerm: this.state.data.currentTerm,
+	          getSelectedRowsData: this.getSelectedRowsData });
+	        allTermDom = _react2.default.createElement(_AllTerm2.default, {
+	          allPass: this.state.allPass,
+	          allFail: this.state.allFail,
 	          getSelectedRowsData: this.getSelectedRowsData });
 	      }
 
@@ -34473,12 +34477,12 @@
 	          _react2.default.createElement(
 	            'div',
 	            { style: styles.slide },
-	            _react2.default.createElement(_Test2.default, null)
+	            allTermDom
 	          ),
 	          _react2.default.createElement(
 	            'div',
 	            { style: styles.slide },
-	            'slide n°3'
+	            'sadfasdf'
 	          )
 	        ),
 	        _react2.default.createElement(_Dialog2.default, {
@@ -47397,7 +47401,7 @@
 
 	var _Table = __webpack_require__(502);
 
-	var _caculate = __webpack_require__(518);
+	var _caculate = __webpack_require__(515);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47448,9 +47452,9 @@
 	    var _this = _possibleConstructorReturn(this, (CurrentTerm.__proto__ || Object.getPrototypeOf(CurrentTerm)).call(this, props));
 
 	    _this.state = {
-	      currentTerm: _this.props.currentTerm,
-	      selectedRowsData: []
+	      currentTerm: _this.props.currentTerm
 	    };
+	    console.log('init CurrentTerm...');
 	    _this.onRowSelection = _this.onRowSelection.bind(_this);
 	    return _this;
 	  }
@@ -50407,6 +50411,853 @@
 
 /***/ },
 /* 515 */
+/***/ function(module, exports) {
+
+	// const obligatory
+	const STRING_OBLIGATORY = '必修';
+	const REG_EXP_GRADE = /^(\d{1,4}\.\d{1,3}|\d{1,4})$/;
+	// REGULAR_Expressions
+
+
+	//
+	/**
+	 * 保留小数点
+	 */
+	const fomatFloat = function(number, position) {
+	  return Math.round(number * Math.pow(10, position)) / Math.pow(10, position);
+	};
+
+
+	/**
+	 * 转换成绩
+	 */
+	const changeGrade = function(grade) {
+	  if (REG_EXP_GRADE.test(grade)) {
+	    return parseFloat(grade);
+	  }
+	  switch (grade) {
+	    case '优秀':
+	      return 95;
+	    case '良好':
+	      return 85;
+	    case '中等':
+	      return 75;
+	    case '通过':
+	      return 60;
+	    case '未通过':
+	      return 0;
+	    default:
+	      return 0;
+	  }
+	};
+
+
+	/**
+	 * 转换学分
+	 * 形势与政策学分为 0.25
+	 */
+	const changeCredit = function(credit) {
+	  if (parseFloat(credit) !== 0) {
+	    return parseFloat(credit);
+	  }
+	  return 0.25;
+	};
+
+
+	/**
+	 * 将成绩转换为对应的绩点
+	 */
+	const changeGradeToPoint = function(grade) {
+	  const newGrade = changeGrade(grade);
+	  if (newGrade >= 95 && newGrade <= 100) {
+	    return 4;
+	  } else if (newGrade >= 90 && newGrade < 95) {
+	    return 3.8;
+	  } else if (newGrade >= 85 && newGrade < 90) {
+	    return 3.6;
+	  } else if (newGrade >= 80 && newGrade < 85) {
+	    return 3.2;
+	  } else if (newGrade >= 75 && newGrade < 80) {
+	    return 2.7;
+	  } else if (newGrade >= 70 && newGrade < 75) {
+	    return 2.2;
+	  } else if (newGrade >= 65 && newGrade < 70) {
+	    return 1.7;
+	  } else if (newGrade >= 60 && newGrade < 65) {
+	    return 1;
+	  } else if (newGrade < 60) {
+	    return 0;
+	  }
+	};
+
+
+	// const isOBLIGATORY function
+	const isObligatory = function(string) {
+	  if (string === STRING_OBLIGATORY) {
+	    return true;
+	  }
+	  return false;
+	};
+
+
+	/**
+	 * 计算绩点、平均分
+	 * 传入一个对象，对象里面是包含绩点、成绩、课程属性的一个数组
+	 */
+	const caculate = function(grades) {
+	  let sumCredit = 0; // 所有学分之和
+	  let sumPointMultiplyCredit = 0; // 所有绩点 * 课程学分之和
+	  let sumGradeMultiplyCredit = 0; // 所有成绩 * 课程成绩之和
+	  let sumCreditObligatory = 0; // 必修学分之和
+	  let sumPointMultiplyCreditObligatory = 0; // 绩点 * 课程学分之和
+	  let sumGradeMultiplyCreditObligatory = 0; // 必修成绩 * 课程成绩之和
+
+	  grades.forEach(function(item) {
+	    sumCredit += changeCredit(item.credit);
+	    sumPointMultiplyCredit += changeGradeToPoint(item.grade) * changeCredit(item.credit);
+	    sumGradeMultiplyCredit += changeGrade(item.grade) * changeCredit(item.credit);
+
+	    if (isObligatory(item.courseProperty)) {
+	      sumCreditObligatory +=
+	        changeCredit(item.credit);
+	      sumPointMultiplyCreditObligatory +=
+	        changeGradeToPoint(item.grade) * changeCredit(item.credit);
+	      sumGradeMultiplyCreditObligatory +=
+	        changeGrade(item.grade) * changeCredit(item.credit);
+	    }
+	  });
+	  // console.log('sumCredit: ', sumCredit);
+	  // console.log('sumPointMultiplyCredit: ', sumPointMultiplyCredit);
+	  // console.log('sumGradeMultiplyCredit: ', sumGradeMultiplyCredit);
+	  return {
+	    averageGpa: fomatFloat(sumPointMultiplyCredit / sumCredit, 3),
+	    averageGrade: fomatFloat(sumGradeMultiplyCredit / sumCredit, 3),
+	    averageGpaObligatory: fomatFloat(sumPointMultiplyCreditObligatory / sumCreditObligatory, 3),
+	    averageGradeObligatory: fomatFloat(sumGradeMultiplyCreditObligatory / sumCreditObligatory, 3),
+	    sumCredit: sumCredit,
+	    sumCreditObligatory: sumCreditObligatory
+	  };
+	};
+
+
+	module.exports = {
+	  changeGradeToPoint,
+	  caculate
+	};
+
+
+/***/ },
+/* 516 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Table = __webpack_require__(502);
+
+	var _caculate = __webpack_require__(515);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var styles = {
+	  borderBottom: {
+	    borderBottom: '1px solid rgb(224, 224, 224)'
+	  },
+	  borderTop: {
+	    borderTop: '1px solid rgb(224, 224, 224)'
+	  },
+	  textAlignCenter: {
+	    textAlign: 'center'
+	  },
+	  paper: {
+	    boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px',
+	    margin: '10px',
+	    backgroundColor: 'red'
+	  },
+	  heightAuto: {
+	    height: 'auto'
+	  },
+	  tableRowColumn40: {
+	    width: '40%',
+	    height: 'auto',
+	    whiteSpace: 'pre-wrap',
+	    overflow: 'visible'
+	  },
+	  tableRowColumn15: {
+	    width: '15%',
+	    height: 'auto',
+	    whiteSpace: 'pre-wrap',
+	    overflow: 'visible'
+	  }
+	};
+
+	var AllTerm = function (_Component) {
+	  _inherits(AllTerm, _Component);
+
+	  function AllTerm(props) {
+	    _classCallCheck(this, AllTerm);
+
+	    var _this = _possibleConstructorReturn(this, (AllTerm.__proto__ || Object.getPrototypeOf(AllTerm)).call(this, props));
+
+	    _this.state = {
+	      currentTerm: _this.props.currentTerm,
+	      selectedRowsData: []
+	    };
+	    console.log('init all term...');
+	    _this.onRowSelection = _this.onRowSelection.bind(_this);
+	    return _this;
+	  }
+
+	  /**
+	   * 初始化 gradeList
+	   * 将其 selected 设置为 false
+	   */
+
+
+	  _createClass(AllTerm, [{
+	    key: 'initGradeListNoSelected',
+	    value: function initGradeListNoSelected() {
+	      var gradeList = this.state.currentTerm.gradeList.map(function (item) {
+	        var grade = item;
+	        grade.selected = false;
+	        return grade;
+	      });
+	      return gradeList;
+	    }
+	  }, {
+	    key: 'onRowSelection',
+	    value: function onRowSelection(selectedRows) {
+	      var gradeList = this.initGradeListNoSelected();
+	      var selectedRowsData = []; // 被选中的所有行的数据
+	      if ((typeof selectedRows === 'undefined' ? 'undefined' : _typeof(selectedRows)) === 'object') {
+	        // 选中的是一个数组，且数组长度大于0
+	        console.log('选中的是一个数组');
+	        selectedRowsData = selectedRows.map(function (item) {
+	          // 将 currentTerm.gradeList 中对应的 selected 设置为 true
+	          gradeList[item].selected = true;
+	          // 返回被选中的 gradeList
+	          return gradeList[item];
+	        });
+	      } else if (selectedRows === 'all') {
+	        // 选中了所有 row
+	        console.log('选中了所有 row...');
+	        selectedRowsData = gradeList;
+	      } else if (selectedRows === 'none') {
+	        // 取消选中所有行
+	        console.log('取消选中所有行...');
+	        selectedRowsData = [];
+	      }
+	      console.log('selectedRowsData: ', selectedRowsData);
+	      // 调用父组建的 getSelectedRowsData
+	      this.props.getSelectedRowsData(selectedRowsData);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var tableRowsDom = '';
+	      var averageDom = '';
+	      if (this.state.currentTerm) {
+	        tableRowsDom = this.state.currentTerm.gradeList.map(function (item, index) {
+	          return _react2.default.createElement(
+	            _Table.TableRow,
+	            { key: index, selected: item.selected, style: styles.heightAuto },
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn40 },
+	              item.courseName
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn15 },
+	              item.credit
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn15 },
+	              item.courseProperty
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn15 },
+	              item.grade
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableRowColumn,
+	              { style: styles.tableRowColumn15 },
+	              (0, _caculate.changeGradeToPoint)(item.grade)
+	            )
+	          );
+	        });
+
+	        averageDom = _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            _Table.Table,
+	            { selectable: false },
+	            _react2.default.createElement(
+	              _Table.TableBody,
+	              { displayRowCheckbox: false },
+	              _react2.default.createElement(
+	                _Table.TableRow,
+	                { displayBorder: true },
+	                _react2.default.createElement(
+	                  _Table.TableRowColumn,
+	                  { colSpan: '2', style: styles.textAlignCenter },
+	                  _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    '本学期成绩'
+	                  )
+	                )
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableRow,
+	                { displayBorder: false },
+	                _react2.default.createElement(
+	                  _Table.TableRowColumn,
+	                  null,
+	                  '全部绩点: ',
+	                  this.state.currentTerm.averageGpa
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableRowColumn,
+	                  null,
+	                  '必修绩点: ',
+	                  this.state.currentTerm.averageGpaObligatory
+	                )
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableRow,
+	                { displayBorder: false, style: styles.borderBottom },
+	                _react2.default.createElement(
+	                  _Table.TableRowColumn,
+	                  null,
+	                  '全部平均分: ',
+	                  this.state.currentTerm.averageGrade
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableRowColumn,
+	                  null,
+	                  '必修平均分: ',
+	                  this.state.currentTerm.averageGradeObligatory
+	                )
+	              )
+	            )
+	          )
+	        );
+	      }
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          { style: styles.paper },
+	          averageDom,
+	          _react2.default.createElement(
+	            _Table.Table,
+	            { multiSelectable: true, fixedFooter: true,
+	              onRowSelection: function onRowSelection(selectedRows) {
+	                return _this2.onRowSelection(selectedRows);
+	              }
+	            },
+	            _react2.default.createElement(
+	              _Table.TableHeader,
+	              { enableSelectAll: true, displaySelectAll: true },
+	              _react2.default.createElement(
+	                _Table.TableRow,
+	                null,
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '40%' } },
+	                  '课程名'
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '15%' } },
+	                  '学分'
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '15%' } },
+	                  '课程属性'
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '15%' } },
+	                  '成绩'
+	                ),
+	                _react2.default.createElement(
+	                  _Table.TableHeaderColumn,
+	                  { style: { width: '15%' } },
+	                  '绩点'
+	                )
+	              )
+	            ),
+	            _react2.default.createElement(
+	              _Table.TableBody,
+	              { deselectOnClickaway: false },
+	              tableRowsDom
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return AllTerm;
+	}(_react.Component);
+
+	exports.default = AllTerm;
+
+/***/ },
+/* 517 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactFa = __webpack_require__(518);
+
+	var _Dialog = __webpack_require__(399);
+
+	var _Dialog2 = _interopRequireDefault(_Dialog);
+
+	var _FloatingActionButton = __webpack_require__(531);
+
+	var _FloatingActionButton2 = _interopRequireDefault(_FloatingActionButton);
+
+	var _FlatButton = __webpack_require__(415);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	var _caculate = __webpack_require__(515);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var styles = {
+	  container: {},
+	  caculate: {
+	    margin: 0,
+	    top: 'auto',
+	    right: 20,
+	    bottom: 30,
+	    left: 'auto',
+	    position: 'fixed',
+	    zIndex: 999
+	  },
+	  diglogItem: {
+	    marginBottom: 10
+	  }
+	};
+
+	var CaculateGrade = function (_Component) {
+	  _inherits(CaculateGrade, _Component);
+
+	  function CaculateGrade(props) {
+	    _classCallCheck(this, CaculateGrade);
+
+	    var _this = _possibleConstructorReturn(this, (CaculateGrade.__proto__ || Object.getPrototypeOf(CaculateGrade)).call(this, props));
+
+	    _this.state = {
+	      open: false,
+	      title: '',
+	      caculateResult: {}
+	    };
+	    _this.handleOpen = _this.handleOpen.bind(_this);
+	    _this.handleClose = _this.handleClose.bind(_this);
+	    _this.onClickCaculate = _this.onClickCaculate.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(CaculateGrade, [{
+	    key: 'handleOpen',
+	    value: function handleOpen(title) {
+	      this.setState({ open: true, title: title });
+	    }
+	  }, {
+	    key: 'handleClose',
+	    value: function handleClose() {
+	      this.setState({ open: false });
+	    }
+	  }, {
+	    key: 'onClickCaculate',
+	    value: function onClickCaculate() {
+	      console.log('caculate onClickCaculate ....');
+	      console.log('grade: ', this.props.grade);
+	      var grade = this.props.grade;
+	      if (grade.length > 0) {
+	        var caculateResult = (0, _caculate.caculate)(this.props.grade);
+	        console.log(caculateResult);
+	        this.setState({
+	          caculateResult: caculateResult,
+	          open: true,
+	          title: '您一共选择了 ' + grade.length + ' 门课程'
+	        });
+	        // this.handleOpen('您一共选择了 ' + grade.length + ' 门课程');
+	      } else {
+	        this.handleOpen('请选择要计算的课程');
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var actions = [_react2.default.createElement(_FlatButton2.default, {
+	        label: '确定',
+	        primary: true,
+	        keyboardFocused: true,
+	        onTouchTap: this.handleClose
+	      })];
+	      var caculateResultDom = '';
+	      console.log('caculateResult: ', this.state.caculateResult);
+	      var caculateResult = this.state.caculateResult;
+	      if (this.state.open && caculateResult.averageGpa !== undefined) {
+	        // dialog is open and caculateResult.averageGpa is not undefined
+	        caculateResultDom = _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'div',
+	            { style: styles.diglogItem },
+	            '总学分: ',
+	            caculateResult.sumCredit
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { style: styles.diglogItem },
+	            '平均绩点: ',
+	            caculateResult.averageGpa
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { style: styles.diglogItem },
+	            '平均分数: ',
+	            caculateResult.averageGrade
+	          )
+	        );
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          _FloatingActionButton2.default,
+	          {
+	            onClick: this.onClickCaculate,
+	            mini: true,
+	            secondary: true,
+	            style: styles.caculate },
+	          _react2.default.createElement(_reactFa.Icon, { name: 'calculator' })
+	        ),
+	        _react2.default.createElement(
+	          _Dialog2.default,
+	          {
+	            title: this.state.title,
+	            actions: actions,
+	            modal: true,
+	            open: this.state.open,
+	            onRequestClose: this.handleClose },
+	          caculateResultDom
+	        )
+	      );
+	    }
+	  }]);
+
+	  return CaculateGrade;
+	}(_react.Component);
+
+	exports.default = CaculateGrade;
+
+/***/ },
+/* 518 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * @copyright 2015, Andrey Popp <8mayday@gmail.com>
+	 */
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	__webpack_require__(519);
+
+	var _Icon = __webpack_require__(529);
+
+	var _Icon2 = _interopRequireDefault(_Icon);
+
+	var _IconStack = __webpack_require__(530);
+
+	var _IconStack2 = _interopRequireDefault(_IconStack);
+
+	exports['default'] = _Icon2['default'];
+	exports.Icon = _Icon2['default'];
+	exports.IconStack = _IconStack2['default'];
+
+
+/***/ },
+/* 519 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 520 */,
+/* 521 */,
+/* 522 */,
+/* 523 */,
+/* 524 */,
+/* 525 */,
+/* 526 */,
+/* 527 */,
+/* 528 */,
+/* 529 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * @copyright 2015, Andrey Popp <8mayday@gmail.com>
+	 */
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var Icon = (function (_React$Component) {
+	  _inherits(Icon, _React$Component);
+
+	  function Icon() {
+	    _classCallCheck(this, Icon);
+
+	    _get(Object.getPrototypeOf(Icon.prototype), 'constructor', this).apply(this, arguments);
+	  }
+
+	  _createClass(Icon, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var Component = _props.Component;
+	      var name = _props.name;
+	      var size = _props.size;
+	      var rotate = _props.rotate;
+	      var flip = _props.flip;
+	      var spin = _props.spin;
+	      var fixedWidth = _props.fixedWidth;
+	      var stack = _props.stack;
+	      var inverse = _props.inverse;
+	      var pulse = _props.pulse;
+	      var className = _props.className;
+
+	      var props = _objectWithoutProperties(_props, ['Component', 'name', 'size', 'rotate', 'flip', 'spin', 'fixedWidth', 'stack', 'inverse', 'pulse', 'className']);
+
+	      var classNames = 'fa fa-' + name;
+	      if (size) {
+	        classNames = classNames + ' fa-' + size;
+	      }
+	      if (rotate) {
+	        classNames = classNames + ' fa-rotate-' + rotate;
+	      }
+	      if (flip) {
+	        classNames = classNames + ' fa-flip-' + flip;
+	      }
+	      if (fixedWidth) {
+	        classNames = classNames + ' fa-fw';
+	      }
+	      if (spin) {
+	        classNames = classNames + ' fa-spin';
+	      }
+	      if (pulse) {
+	        classNames = classNames + ' fa-pulse';
+	      }
+
+	      if (stack) {
+	        classNames = classNames + ' fa-stack-' + stack;
+	      }
+	      if (inverse) {
+	        classNames = classNames + ' fa-inverse';
+	      }
+
+	      if (className) {
+	        classNames = classNames + ' ' + className;
+	      }
+	      return _react2['default'].createElement(Component, _extends({}, props, { className: classNames }));
+	    }
+	  }], [{
+	    key: 'propTypes',
+	    value: {
+	      name: _react.PropTypes.string.isRequired,
+	      className: _react.PropTypes.string,
+	      size: _react.PropTypes.oneOf(['lg', '2x', '3x', '4x', '5x']),
+	      rotate: _react.PropTypes.oneOf(['45', '90', '135', '180', '225', '270', '315']),
+	      flip: _react.PropTypes.oneOf(['horizontal', 'vertical']),
+	      fixedWidth: _react.PropTypes.bool,
+	      spin: _react.PropTypes.bool,
+	      pulse: _react.PropTypes.bool,
+	      stack: _react.PropTypes.oneOf(['1x', '2x']),
+	      inverse: _react.PropTypes.bool,
+	      Component: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.func])
+	    },
+	    enumerable: true
+	  }, {
+	    key: 'defaultProps',
+	    value: {
+	      Component: 'span'
+	    },
+	    enumerable: true
+	  }]);
+
+	  return Icon;
+	})(_react2['default'].Component);
+
+	exports['default'] = Icon;
+	module.exports = exports['default'];
+
+
+/***/ },
+/* 530 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * @copyright 2015, Andrey Popp <8mayday@gmail.com>
+	 */
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var IconStack = (function (_React$Component) {
+	  _inherits(IconStack, _React$Component);
+
+	  function IconStack() {
+	    _classCallCheck(this, IconStack);
+
+	    _get(Object.getPrototypeOf(IconStack.prototype), 'constructor', this).apply(this, arguments);
+	  }
+
+	  _createClass(IconStack, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var className = _props.className;
+	      var size = _props.size;
+	      var children = _props.children;
+
+	      var props = _objectWithoutProperties(_props, ['className', 'size', 'children']);
+
+	      var classNames = ['fa-stack'];
+
+	      if (size) {
+	        classNames.push('fa-' + size);
+	      }
+
+	      if (className) {
+	        classNames.push(className);
+	      }
+
+	      var iconStackClassName = classNames.join(' ');
+
+	      return _react2['default'].createElement(
+	        'span',
+	        _extends({}, props, { className: iconStackClassName }),
+	        children
+	      );
+	    }
+	  }], [{
+	    key: 'propTypes',
+	    value: {
+	      className: _react.PropTypes.string,
+	      size: _react.PropTypes.oneOf(['lg', '2x', '3x', '4x', '5x']),
+	      children: _react.PropTypes.node.isRequired
+	    },
+	    enumerable: true
+	  }]);
+
+	  return IconStack;
+	})(_react2['default'].Component);
+
+	exports['default'] = IconStack;
+	module.exports = exports['default'];
+
+
+/***/ },
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50416,7 +51267,7 @@
 	});
 	exports.default = undefined;
 
-	var _FloatingActionButton = __webpack_require__(516);
+	var _FloatingActionButton = __webpack_require__(532);
 
 	var _FloatingActionButton2 = _interopRequireDefault(_FloatingActionButton);
 
@@ -50425,7 +51276,7 @@
 	exports.default = _FloatingActionButton2.default;
 
 /***/ },
-/* 516 */
+/* 532 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -50784,630 +51635,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 517 */,
-/* 518 */
-/***/ function(module, exports) {
-
-	// const obligatory
-	const STRING_OBLIGATORY = '必修';
-	const REG_EXP_GRADE = /^(\d{1,4}\.\d{1,3}|\d{1,4})$/;
-	// REGULAR_Expressions
-
-
-	//
-	/**
-	 * 保留小数点
-	 */
-	const fomatFloat = function(number, position) {
-	  return Math.round(number * Math.pow(10, position)) / Math.pow(10, position);
-	};
-
-
-	/**
-	 * 转换成绩
-	 */
-	const changeGrade = function(grade) {
-	  if (REG_EXP_GRADE.test(grade)) {
-	    return parseFloat(grade);
-	  }
-	  switch (grade) {
-	    case '优秀':
-	      return 95;
-	    case '良好':
-	      return 85;
-	    case '中等':
-	      return 75;
-	    case '通过':
-	      return 60;
-	    case '未通过':
-	      return 0;
-	    default:
-	      return 0;
-	  }
-	};
-
-
-	/**
-	 * 转换学分
-	 * 形势与政策学分为 0.25
-	 */
-	const changeCredit = function(credit) {
-	  if (parseFloat(credit) !== 0) {
-	    return parseFloat(credit);
-	  }
-	  return 0.25;
-	};
-
-
-	/**
-	 * 将成绩转换为对应的绩点
-	 */
-	const changeGradeToPoint = function(grade) {
-	  const newGrade = changeGrade(grade);
-	  if (newGrade >= 95 && newGrade <= 100) {
-	    return 4;
-	  } else if (newGrade >= 90 && newGrade < 95) {
-	    return 3.8;
-	  } else if (newGrade >= 85 && newGrade < 90) {
-	    return 3.6;
-	  } else if (newGrade >= 80 && newGrade < 85) {
-	    return 3.2;
-	  } else if (newGrade >= 75 && newGrade < 80) {
-	    return 2.7;
-	  } else if (newGrade >= 70 && newGrade < 75) {
-	    return 2.2;
-	  } else if (newGrade >= 65 && newGrade < 70) {
-	    return 1.7;
-	  } else if (newGrade >= 60 && newGrade < 65) {
-	    return 1;
-	  } else if (newGrade < 60) {
-	    return 0;
-	  }
-	};
-
-
-	// const isOBLIGATORY function
-	const isObligatory = function(string) {
-	  if (string === STRING_OBLIGATORY) {
-	    return true;
-	  }
-	  return false;
-	};
-
-
-	/**
-	 * 计算绩点、平均分
-	 * 传入一个对象，对象里面是包含绩点、成绩、课程属性的一个数组
-	 */
-	const caculate = function(grades) {
-	  let sumCredit = 0; // 所有学分之和
-	  let sumPointMultiplyCredit = 0; // 所有绩点 * 课程学分之和
-	  let sumGradeMultiplyCredit = 0; // 所有成绩 * 课程成绩之和
-	  let sumCreditObligatory = 0; // 必修学分之和
-	  let sumPointMultiplyCreditObligatory = 0; // 绩点 * 课程学分之和
-	  let sumGradeMultiplyCreditObligatory = 0; // 必修成绩 * 课程成绩之和
-
-	  grades.forEach(function(item) {
-	    sumCredit += changeCredit(item.credit);
-	    sumPointMultiplyCredit += changeGradeToPoint(item.grade) * changeCredit(item.credit);
-	    sumGradeMultiplyCredit += changeGrade(item.grade) * changeCredit(item.credit);
-
-	    if (isObligatory(item.courseProperty)) {
-	      sumCreditObligatory +=
-	        changeCredit(item.credit);
-	      sumPointMultiplyCreditObligatory +=
-	        changeGradeToPoint(item.grade) * changeCredit(item.credit);
-	      sumGradeMultiplyCreditObligatory +=
-	        changeGrade(item.grade) * changeCredit(item.credit);
-	    }
-	  });
-	  // console.log('sumCredit: ', sumCredit);
-	  // console.log('sumPointMultiplyCredit: ', sumPointMultiplyCredit);
-	  // console.log('sumGradeMultiplyCredit: ', sumGradeMultiplyCredit);
-	  return {
-	    averageGpa: fomatFloat(sumPointMultiplyCredit / sumCredit, 3),
-	    averageGrade: fomatFloat(sumGradeMultiplyCredit / sumCredit, 3),
-	    averageGpaObligatory: fomatFloat(sumPointMultiplyCreditObligatory / sumCreditObligatory, 3),
-	    averageGradeObligatory: fomatFloat(sumGradeMultiplyCreditObligatory / sumCreditObligatory, 3),
-	    sumCredit: sumCredit,
-	    sumCreditObligatory: sumCreditObligatory
-	  };
-	};
-
-
-	module.exports = {
-	  changeGradeToPoint,
-	  caculate
-	};
-
-
-/***/ },
-/* 519 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _Table = __webpack_require__(502);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var TableExampleSimple = function TableExampleSimple() {
-	  return _react2.default.createElement(
-	    _Table.Table,
-	    null,
-	    _react2.default.createElement(
-	      _Table.TableHeader,
-	      null,
-	      _react2.default.createElement(
-	        _Table.TableRow,
-	        null,
-	        _react2.default.createElement(
-	          _Table.TableHeaderColumn,
-	          null,
-	          'ID'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableHeaderColumn,
-	          null,
-	          'Name'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableHeaderColumn,
-	          null,
-	          'Status'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableHeaderColumn,
-	          null,
-	          'Name'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableHeaderColumn,
-	          null,
-	          'Status'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableHeaderColumn,
-	          null,
-	          'Name'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableHeaderColumn,
-	          null,
-	          'Status'
-	        )
-	      )
-	    ),
-	    _react2.default.createElement(
-	      _Table.TableBody,
-	      null,
-	      _react2.default.createElement(
-	        _Table.TableRow,
-	        { style: { height: 'auto' } },
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          '1'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          '中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          '中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'John Smith'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          '中文中文中文中文中文中文中文中文'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'John Smith'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Employed'
-	        )
-	      ),
-	      _react2.default.createElement(
-	        _Table.TableRow,
-	        { style: { height: 'auto' } },
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          '2'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Randal White'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Unemployed'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Randal White'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Unemployed'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Randal White'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Unemployed'
-	        )
-	      ),
-	      _react2.default.createElement(
-	        _Table.TableRow,
-	        { style: { height: 'auto' } },
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          '3'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Stephanie Sanders'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Employed'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Stephanie Sanders'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Employed'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Stephanie Sanders'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          { style: { height: 'auto', whiteSpace: 'pre-wrap', overflow: 'visible' } },
-	          'Employed'
-	        )
-	      ),
-	      _react2.default.createElement(
-	        _Table.TableRow,
-	        { style: { height: 'auto' } },
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          '4'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          'Steve Brown'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          'Employed'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          'Steve Brown'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          'Employed'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          'Steve Brown'
-	        ),
-	        _react2.default.createElement(
-	          _Table.TableRowColumn,
-	          null,
-	          'Employed'
-	        )
-	      )
-	    )
-	  );
-	};
-
-	exports.default = TableExampleSimple;
-
-/***/ },
-/* 520 */,
-/* 521 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * @copyright 2015, Andrey Popp <8mayday@gmail.com>
-	 */
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	__webpack_require__(522);
-
-	var _Icon = __webpack_require__(532);
-
-	var _Icon2 = _interopRequireDefault(_Icon);
-
-	var _IconStack = __webpack_require__(533);
-
-	var _IconStack2 = _interopRequireDefault(_IconStack);
-
-	exports['default'] = _Icon2['default'];
-	exports.Icon = _Icon2['default'];
-	exports.IconStack = _IconStack2['default'];
-
-
-/***/ },
-/* 522 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 523 */,
-/* 524 */,
-/* 525 */,
-/* 526 */,
-/* 527 */,
-/* 528 */,
-/* 529 */,
-/* 530 */,
-/* 531 */,
-/* 532 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * @copyright 2015, Andrey Popp <8mayday@gmail.com>
-	 */
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var Icon = (function (_React$Component) {
-	  _inherits(Icon, _React$Component);
-
-	  function Icon() {
-	    _classCallCheck(this, Icon);
-
-	    _get(Object.getPrototypeOf(Icon.prototype), 'constructor', this).apply(this, arguments);
-	  }
-
-	  _createClass(Icon, [{
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var Component = _props.Component;
-	      var name = _props.name;
-	      var size = _props.size;
-	      var rotate = _props.rotate;
-	      var flip = _props.flip;
-	      var spin = _props.spin;
-	      var fixedWidth = _props.fixedWidth;
-	      var stack = _props.stack;
-	      var inverse = _props.inverse;
-	      var pulse = _props.pulse;
-	      var className = _props.className;
-
-	      var props = _objectWithoutProperties(_props, ['Component', 'name', 'size', 'rotate', 'flip', 'spin', 'fixedWidth', 'stack', 'inverse', 'pulse', 'className']);
-
-	      var classNames = 'fa fa-' + name;
-	      if (size) {
-	        classNames = classNames + ' fa-' + size;
-	      }
-	      if (rotate) {
-	        classNames = classNames + ' fa-rotate-' + rotate;
-	      }
-	      if (flip) {
-	        classNames = classNames + ' fa-flip-' + flip;
-	      }
-	      if (fixedWidth) {
-	        classNames = classNames + ' fa-fw';
-	      }
-	      if (spin) {
-	        classNames = classNames + ' fa-spin';
-	      }
-	      if (pulse) {
-	        classNames = classNames + ' fa-pulse';
-	      }
-
-	      if (stack) {
-	        classNames = classNames + ' fa-stack-' + stack;
-	      }
-	      if (inverse) {
-	        classNames = classNames + ' fa-inverse';
-	      }
-
-	      if (className) {
-	        classNames = classNames + ' ' + className;
-	      }
-	      return _react2['default'].createElement(Component, _extends({}, props, { className: classNames }));
-	    }
-	  }], [{
-	    key: 'propTypes',
-	    value: {
-	      name: _react.PropTypes.string.isRequired,
-	      className: _react.PropTypes.string,
-	      size: _react.PropTypes.oneOf(['lg', '2x', '3x', '4x', '5x']),
-	      rotate: _react.PropTypes.oneOf(['45', '90', '135', '180', '225', '270', '315']),
-	      flip: _react.PropTypes.oneOf(['horizontal', 'vertical']),
-	      fixedWidth: _react.PropTypes.bool,
-	      spin: _react.PropTypes.bool,
-	      pulse: _react.PropTypes.bool,
-	      stack: _react.PropTypes.oneOf(['1x', '2x']),
-	      inverse: _react.PropTypes.bool,
-	      Component: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.func])
-	    },
-	    enumerable: true
-	  }, {
-	    key: 'defaultProps',
-	    value: {
-	      Component: 'span'
-	    },
-	    enumerable: true
-	  }]);
-
-	  return Icon;
-	})(_react2['default'].Component);
-
-	exports['default'] = Icon;
-	module.exports = exports['default'];
-
-
-/***/ },
 /* 533 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * @copyright 2015, Andrey Popp <8mayday@gmail.com>
-	 */
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var IconStack = (function (_React$Component) {
-	  _inherits(IconStack, _React$Component);
-
-	  function IconStack() {
-	    _classCallCheck(this, IconStack);
-
-	    _get(Object.getPrototypeOf(IconStack.prototype), 'constructor', this).apply(this, arguments);
-	  }
-
-	  _createClass(IconStack, [{
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var className = _props.className;
-	      var size = _props.size;
-	      var children = _props.children;
-
-	      var props = _objectWithoutProperties(_props, ['className', 'size', 'children']);
-
-	      var classNames = ['fa-stack'];
-
-	      if (size) {
-	        classNames.push('fa-' + size);
-	      }
-
-	      if (className) {
-	        classNames.push(className);
-	      }
-
-	      var iconStackClassName = classNames.join(' ');
-
-	      return _react2['default'].createElement(
-	        'span',
-	        _extends({}, props, { className: iconStackClassName }),
-	        children
-	      );
-	    }
-	  }], [{
-	    key: 'propTypes',
-	    value: {
-	      className: _react.PropTypes.string,
-	      size: _react.PropTypes.oneOf(['lg', '2x', '3x', '4x', '5x']),
-	      children: _react.PropTypes.node.isRequired
-	    },
-	    enumerable: true
-	  }]);
-
-	  return IconStack;
-	})(_react2['default'].Component);
-
-	exports['default'] = IconStack;
-	module.exports = exports['default'];
-
-
-/***/ },
-/* 534 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51424,7 +51652,7 @@
 
 	var _reactRouter = __webpack_require__(173);
 
-	var _TextField = __webpack_require__(535);
+	var _TextField = __webpack_require__(534);
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -51436,7 +51664,7 @@
 
 	var _FlatButton2 = _interopRequireDefault(_FlatButton);
 
-	var _RaisedButton = __webpack_require__(541);
+	var _RaisedButton = __webpack_require__(540);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
@@ -51679,7 +51907,7 @@
 	exports.default = Login;
 
 /***/ },
-/* 535 */
+/* 534 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51689,7 +51917,7 @@
 	});
 	exports.default = undefined;
 
-	var _TextField = __webpack_require__(536);
+	var _TextField = __webpack_require__(535);
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -51698,7 +51926,7 @@
 	exports.default = _TextField2.default;
 
 /***/ },
-/* 536 */
+/* 535 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -51741,19 +51969,19 @@
 
 	var _deprecatedPropType2 = _interopRequireDefault(_deprecatedPropType);
 
-	var _EnhancedTextarea = __webpack_require__(537);
+	var _EnhancedTextarea = __webpack_require__(536);
 
 	var _EnhancedTextarea2 = _interopRequireDefault(_EnhancedTextarea);
 
-	var _TextFieldHint = __webpack_require__(538);
+	var _TextFieldHint = __webpack_require__(537);
 
 	var _TextFieldHint2 = _interopRequireDefault(_TextFieldHint);
 
-	var _TextFieldLabel = __webpack_require__(539);
+	var _TextFieldLabel = __webpack_require__(538);
 
 	var _TextFieldLabel2 = _interopRequireDefault(_TextFieldLabel);
 
-	var _TextFieldUnderline = __webpack_require__(540);
+	var _TextFieldUnderline = __webpack_require__(539);
 
 	var _TextFieldUnderline2 = _interopRequireDefault(_TextFieldUnderline);
 
@@ -52272,7 +52500,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 537 */
+/* 536 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52500,7 +52728,7 @@
 	exports.default = EnhancedTextarea;
 
 /***/ },
-/* 538 */
+/* 537 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52581,7 +52809,7 @@
 	exports.default = TextFieldHint;
 
 /***/ },
-/* 539 */
+/* 538 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52698,7 +52926,7 @@
 	exports.default = TextFieldLabel;
 
 /***/ },
-/* 540 */
+/* 539 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52834,7 +53062,7 @@
 	exports.default = TextFieldUnderline;
 
 /***/ },
-/* 541 */
+/* 540 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52844,7 +53072,7 @@
 	});
 	exports.default = undefined;
 
-	var _RaisedButton = __webpack_require__(542);
+	var _RaisedButton = __webpack_require__(541);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
@@ -52853,7 +53081,7 @@
 	exports.default = _RaisedButton2.default;
 
 /***/ },
-/* 542 */
+/* 541 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -53305,178 +53533,6 @@
 	};
 	exports.default = RaisedButton;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ },
-/* 543 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactFa = __webpack_require__(521);
-
-	var _Dialog = __webpack_require__(399);
-
-	var _Dialog2 = _interopRequireDefault(_Dialog);
-
-	var _FloatingActionButton = __webpack_require__(515);
-
-	var _FloatingActionButton2 = _interopRequireDefault(_FloatingActionButton);
-
-	var _FlatButton = __webpack_require__(415);
-
-	var _FlatButton2 = _interopRequireDefault(_FlatButton);
-
-	var _caculate = __webpack_require__(518);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var styles = {
-	  container: {},
-	  caculate: {
-	    margin: 0,
-	    top: 'auto',
-	    right: 20,
-	    bottom: 30,
-	    left: 'auto',
-	    position: 'fixed',
-	    zIndex: 999
-	  },
-	  diglogItem: {
-	    marginBottom: 10
-	  }
-	};
-
-	var CaculateGrade = function (_Component) {
-	  _inherits(CaculateGrade, _Component);
-
-	  function CaculateGrade(props) {
-	    _classCallCheck(this, CaculateGrade);
-
-	    var _this = _possibleConstructorReturn(this, (CaculateGrade.__proto__ || Object.getPrototypeOf(CaculateGrade)).call(this, props));
-
-	    _this.state = {
-	      open: false,
-	      title: '',
-	      caculateResult: {}
-	    };
-	    _this.handleOpen = _this.handleOpen.bind(_this);
-	    _this.handleClose = _this.handleClose.bind(_this);
-	    _this.onClickCaculate = _this.onClickCaculate.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(CaculateGrade, [{
-	    key: 'handleOpen',
-	    value: function handleOpen(title) {
-	      this.setState({ open: true, title: title });
-	    }
-	  }, {
-	    key: 'handleClose',
-	    value: function handleClose() {
-	      this.setState({ open: false });
-	    }
-	  }, {
-	    key: 'onClickCaculate',
-	    value: function onClickCaculate() {
-	      console.log('caculate onClickCaculate ....');
-	      console.log('grade: ', this.props.grade);
-	      var grade = this.props.grade;
-	      if (grade.length > 0) {
-	        var caculateResult = (0, _caculate.caculate)(this.props.grade);
-	        console.log(caculateResult);
-	        this.setState({
-	          caculateResult: caculateResult,
-	          open: true,
-	          title: '您一共选择了 ' + grade.length + ' 门课程'
-	        });
-	        // this.handleOpen('您一共选择了 ' + grade.length + ' 门课程');
-	      } else {
-	        this.handleOpen('请选择要计算的课程');
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var actions = [_react2.default.createElement(_FlatButton2.default, {
-	        label: '确定',
-	        primary: true,
-	        keyboardFocused: true,
-	        onTouchTap: this.handleClose
-	      })];
-	      var caculateResultDom = '';
-	      console.log('caculateResult: ', this.state.caculateResult);
-	      var caculateResult = this.state.caculateResult;
-	      if (this.state.open && caculateResult.averageGpa !== undefined) {
-	        // dialog is open and caculateResult.averageGpa is not undefined
-	        caculateResultDom = _react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement(
-	            'div',
-	            { style: styles.diglogItem },
-	            '总学分: ',
-	            caculateResult.sumCredit
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { style: styles.diglogItem },
-	            '平均绩点: ',
-	            caculateResult.averageGpa
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { style: styles.diglogItem },
-	            '平均分数: ',
-	            caculateResult.averageGrade
-	          )
-	        );
-	      }
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          _FloatingActionButton2.default,
-	          {
-	            onClick: this.onClickCaculate,
-	            mini: true,
-	            secondary: true,
-	            style: styles.caculate },
-	          _react2.default.createElement(_reactFa.Icon, { name: 'calculator' })
-	        ),
-	        _react2.default.createElement(
-	          _Dialog2.default,
-	          {
-	            title: this.state.title,
-	            actions: actions,
-	            modal: true,
-	            open: this.state.open,
-	            onRequestClose: this.handleClose },
-	          caculateResultDom
-	        )
-	      );
-	    }
-	  }]);
-
-	  return CaculateGrade;
-	}(_react.Component);
-
-	exports.default = CaculateGrade;
 
 /***/ }
 /******/ ]);

@@ -40,8 +40,9 @@ class CurrentTerm extends Component {
     super(props);
     this.state = {
       currentTerm: this.props.currentTerm,
-      selectedRowsData: []
+      // selectedRowsData: []
     };
+    console.log('init CurrentTerm...');
     this.onRowSelection = this.onRowSelection.bind(this);
   }
 

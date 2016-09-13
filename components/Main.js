@@ -7,7 +7,7 @@ import SwipeableViews from 'react-swipeable-views';
 import AppBarIconMenu from './AppBarIconMenu';
 import RefreshIndicatorLoading from './RefreshIndicator';
 import CurrentTerm from './CurrentTerm';
-import Test from './Test';
+import AllTerm from './AllTerm';
 import CaculateGrade from './CaculateGrade';
 
 const URL_GET_GRADE = '/grade';
@@ -135,12 +135,18 @@ class Main extends Component {
     ];
 
     let currentTermDom = ''; // 当前学期
-    // let allGradeDom = ''; // 所有成绩(及格+不及格)
+    let allTermDom = ''; // 所有学期成绩(及格+不及格)
     // let tipsDom = ''; // 使用前必读
     if (this.state.data) {
       currentTermDom = (
         <CurrentTerm
           currentTerm={this.state.data.currentTerm}
+          getSelectedRowsData={this.getSelectedRowsData} />
+      );
+      allTermDom = (
+        <AllTerm
+          allPass={this.state.allPass}
+          allFail={this.state.allFail}
           getSelectedRowsData={this.getSelectedRowsData} />
       );
     }
@@ -174,10 +180,10 @@ class Main extends Component {
             {currentTermDom}
           </div>
           <div style={styles.slide}>
-            <Test />
+            {allTermDom}
           </div>
           <div style={styles.slide}>
-            slide n°3
+            sadfasdf
           </div>
         </SwipeableViews>
 
