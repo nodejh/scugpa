@@ -39,7 +39,7 @@ class CurrentTerm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTerm: this.props.currentTerm,
+      // currentTerm: this.props.currentTerm,
       // selectedRowsData: []
     };
     console.log('init CurrentTerm...');
@@ -52,7 +52,7 @@ class CurrentTerm extends Component {
    * 将其 selected 设置为 false
    */
   initGradeListNoSelected() {
-    const gradeList = this.state.currentTerm.gradeList.map(function(item) {
+    const gradeList = this.props.currentTerm.gradeList.map(function(item) {
       const grade = item;
       grade.selected = false;
       return grade;
@@ -93,8 +93,8 @@ class CurrentTerm extends Component {
 
     let tableRowsDom = '';
     let averageDom = '';
-    if (this.state.currentTerm) {
-      tableRowsDom = this.state.currentTerm.gradeList.map(function(item, index) {
+    if (this.props.currentTerm) {
+      tableRowsDom = this.props.currentTerm.gradeList.map(function(item, index) {
         return (
           <TableRow key={index} selected={item.selected} style={styles.heightAuto}>
             {/* <TableRowColumn>{item.courseNumber}</TableRowColumn> */}
@@ -120,15 +120,15 @@ class CurrentTerm extends Component {
                 </TableRowColumn>
               </TableRow>
               <TableRow displayBorder={false}>
-                <TableRowColumn>全部绩点: {this.state.currentTerm.averageGpa}</TableRowColumn>
+                <TableRowColumn>全部绩点: {this.props.currentTerm.averageGpa}</TableRowColumn>
                 <TableRowColumn>
-                  必修绩点: {this.state.currentTerm.averageGpaObligatory}
+                  必修绩点: {this.props.currentTerm.averageGpaObligatory}
                 </TableRowColumn>
               </TableRow>
               <TableRow displayBorder={false} style={styles.borderBottom}>
-                <TableRowColumn>全部平均分: {this.state.currentTerm.averageGrade}</TableRowColumn>
+                <TableRowColumn>全部平均分: {this.props.currentTerm.averageGrade}</TableRowColumn>
                 <TableRowColumn>
-                  必修平均分: {this.state.currentTerm.averageGradeObligatory}
+                  必修平均分: {this.props.currentTerm.averageGradeObligatory}
                 </TableRowColumn>
               </TableRow>
             </TableBody>

@@ -47452,7 +47452,8 @@
 	    var _this = _possibleConstructorReturn(this, (CurrentTerm.__proto__ || Object.getPrototypeOf(CurrentTerm)).call(this, props));
 
 	    _this.state = {
-	      currentTerm: _this.props.currentTerm
+	      // currentTerm: this.props.currentTerm,
+	      // selectedRowsData: []
 	    };
 	    console.log('init CurrentTerm...');
 	    _this.onRowSelection = _this.onRowSelection.bind(_this);
@@ -47468,7 +47469,7 @@
 	  _createClass(CurrentTerm, [{
 	    key: 'initGradeListNoSelected',
 	    value: function initGradeListNoSelected() {
-	      var gradeList = this.state.currentTerm.gradeList.map(function (item) {
+	      var gradeList = this.props.currentTerm.gradeList.map(function (item) {
 	        var grade = item;
 	        grade.selected = false;
 	        return grade;
@@ -47511,8 +47512,8 @@
 
 	      var tableRowsDom = '';
 	      var averageDom = '';
-	      if (this.state.currentTerm) {
-	        tableRowsDom = this.state.currentTerm.gradeList.map(function (item, index) {
+	      if (this.props.currentTerm) {
+	        tableRowsDom = this.props.currentTerm.gradeList.map(function (item, index) {
 	          return _react2.default.createElement(
 	            _Table.TableRow,
 	            { key: index, selected: item.selected, style: styles.heightAuto },
@@ -47573,13 +47574,13 @@
 	                  _Table.TableRowColumn,
 	                  null,
 	                  '全部绩点: ',
-	                  this.state.currentTerm.averageGpa
+	                  this.props.currentTerm.averageGpa
 	                ),
 	                _react2.default.createElement(
 	                  _Table.TableRowColumn,
 	                  null,
 	                  '必修绩点: ',
-	                  this.state.currentTerm.averageGpaObligatory
+	                  this.props.currentTerm.averageGpaObligatory
 	                )
 	              ),
 	              _react2.default.createElement(
@@ -47589,13 +47590,13 @@
 	                  _Table.TableRowColumn,
 	                  null,
 	                  '全部平均分: ',
-	                  this.state.currentTerm.averageGrade
+	                  this.props.currentTerm.averageGrade
 	                ),
 	                _react2.default.createElement(
 	                  _Table.TableRowColumn,
 	                  null,
 	                  '必修平均分: ',
-	                  this.state.currentTerm.averageGradeObligatory
+	                  this.props.currentTerm.averageGradeObligatory
 	                )
 	              )
 	            )
