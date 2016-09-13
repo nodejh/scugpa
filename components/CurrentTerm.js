@@ -16,7 +16,6 @@ const styles = {
   paper: {
     boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px',
     margin: '20px 10px',
-    backgroundColor: 'red'
   },
   heightAuto: {
     height: 'auto'

@@ -7,7 +7,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import AppBarIconMenu from './AppBarIconMenu';
 import RefreshIndicatorLoading from './RefreshIndicator';
 
-
 const URL_LOGIN = '/login';
 const styles = {
   loginContent: {
@@ -48,6 +47,7 @@ class Login extends Component {
     this.state = {
       isLoading: false,
       open: false,
+      openTips: false,
       title: '',
       number: '',
       password: ''
@@ -135,10 +135,11 @@ class Login extends Component {
         <AppBarIconMenu />
         <div style={styles.loginContent}>
           { this.state.isLoading && <RefreshIndicatorLoading initSize='30' initLeft='0' initTop='-15' initStatus='loading' /> }
-          <div style={styles.loginText}>
+          <div style={styles.loginText} className='loginText'>
             <h2>四川大学绩点平均分一键计算</h2>
             <TextField
               style={styles.textWidth}
+              className='textWidth'
               hintText='请输入您的学号'
               floatingLabelText='请输入您的学号'
               autoComplete='off'
@@ -148,6 +149,7 @@ class Login extends Component {
             />
             <TextField
               style={styles.textWidth}
+              className='textWidth'
               hintText='请输入您的密码'
               floatingLabelText='请输入您的密码'
               type='password'
@@ -158,6 +160,7 @@ class Login extends Component {
             <RaisedButton
               primary={true}
               style={styles.button}
+              className='button'
               label='计算绩点平均分'
               onClick={this.onClickButton}
             />
@@ -177,6 +180,7 @@ class Login extends Component {
           onRequestClose={this.handleCloseDialog}
         >
         </Dialog>
+
       </div>
     );
   }
