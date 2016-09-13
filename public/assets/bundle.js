@@ -34380,8 +34380,8 @@
 	    key: 'handleChangeTab',
 	    value: function handleChangeTab(value) {
 	      this.setState({
-	        slideIndex: value
-	      });
+	        slideIndex: value,
+	        selectedRowsData: [] });
 	    }
 
 	    /**
@@ -34458,7 +34458,7 @@
 	      var selectedCurrentFailData = this.state.selectedCurrentFailData;
 	      var selectedBeforeFailData = this.state.selectedBeforeFailData;
 	      var selectedRowsData = _array2.default.reduceDimension([selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData]);
-	      console.log('设置被选中的成绩...');
+	      console.log('设置被选中的成绩 allPass...');
 	      console.log(selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData);
 	      console.log('selectedRowsData: ', selectedRowsData);
 	      this.setState({
@@ -34482,7 +34482,7 @@
 	      // });
 	      console.log('selectedCurrentFailData: ', grade);
 	      // this.setSelectedRowsData();
-	      var selectedAllPassData = _array2.default.reduceDimension(this.state.getSelectedAllPassData);
+	      var selectedAllPassData = _array2.default.reduceDimension(this.state.selectedAllPassData);
 	      var selectedCurrentFailData = grade;
 	      var selectedBeforeFailData = this.state.selectedBeforeFailData;
 	      var selectedRowsData = _array2.default.reduceDimension([selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
@@ -34510,7 +34510,7 @@
 	      // });
 	      console.log('selectedBeforeFailData: ', grade);
 	      // this.setSelectedRowsData();
-	      var selectedAllPassData = _array2.default.reduceDimension(this.state.getSelectedAllPassData);
+	      var selectedAllPassData = _array2.default.reduceDimension(this.state.selectedAllPassData);
 	      var selectedCurrentFailData = this.state.selectedCurrentFailData;
 	      var selectedBeforeFailData = grade;
 	      var selectedRowsData = _array2.default.reduceDimension([selectedAllPassData, selectedCurrentFailData, selectedBeforeFailData]);
@@ -51913,9 +51913,11 @@
 	    value: function onClickCaculate() {
 	      console.log('caculate onClickCaculate ....');
 	      console.log('grade: ', this.props.grade);
-	      var grade = this.props.grade;
+	      var grade = this.props.grade.filter(function (item) {
+	        return item !== undefined;
+	      });
 	      if (grade.length > 0) {
-	        var caculateResult = (0, _caculate.caculate)(this.props.grade);
+	        var caculateResult = (0, _caculate.caculate)(grade);
 	        console.log(caculateResult);
 	        this.setState({
 	          caculateResult: caculateResult,

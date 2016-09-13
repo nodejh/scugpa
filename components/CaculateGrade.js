@@ -53,9 +53,11 @@ class CaculateGrade extends Component {
   onClickCaculate() {
     console.log('caculate onClickCaculate ....');
     console.log('grade: ', this.props.grade);
-    const grade = this.props.grade;
+    const grade = this.props.grade.filter(function(item) {
+      return item !== undefined;
+    });
     if (grade.length > 0) {
-      const caculateResult = caculate(this.props.grade);
+      const caculateResult = caculate(grade);
       console.log(caculateResult);
       this.setState({
         caculateResult: caculateResult,

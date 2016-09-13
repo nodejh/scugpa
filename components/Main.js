@@ -86,6 +86,7 @@ class Main extends Component {
   handleChangeTab(value) {
     this.setState({
       slideIndex: value,
+      selectedRowsData: [], // 同时清空所有已被选择的 row data
     });
   }
 
@@ -158,7 +159,7 @@ class Main extends Component {
     const selectedBeforeFailData = this.state.selectedBeforeFailData;
     const selectedRowsData = ArrayOperate.reduceDimension(
       [selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData]);
-    console.log('设置被选中的成绩...');
+    console.log('设置被选中的成绩 allPass...');
     console.log(selectedAllPassDataArray, selectedCurrentFailData, selectedBeforeFailData);
     console.log('selectedRowsData: ', selectedRowsData);
     this.setState({
@@ -180,7 +181,7 @@ class Main extends Component {
     // });
     console.log('selectedCurrentFailData: ', grade);
     // this.setSelectedRowsData();
-    const selectedAllPassData = ArrayOperate.reduceDimension(this.state.getSelectedAllPassData);
+    const selectedAllPassData = ArrayOperate.reduceDimension(this.state.selectedAllPassData);
     const selectedCurrentFailData = grade;
     const selectedBeforeFailData = this.state.selectedBeforeFailData;
     const selectedRowsData = ArrayOperate.reduceDimension(
@@ -207,7 +208,7 @@ class Main extends Component {
     // });
     console.log('selectedBeforeFailData: ', grade);
     // this.setSelectedRowsData();
-    const selectedAllPassData = ArrayOperate.reduceDimension(this.state.getSelectedAllPassData);
+    const selectedAllPassData = ArrayOperate.reduceDimension(this.state.selectedAllPassData);
     const selectedCurrentFailData = this.state.selectedCurrentFailData;
     const selectedBeforeFailData = grade;
     const selectedRowsData = ArrayOperate.reduceDimension(
