@@ -32,6 +32,7 @@ class CaculateGrade extends Component {
     this.state = {
       open: false,
       title: '',
+      gradeLength: 0,
       caculateResult: {}
     };
     this.handleOpen = this.handleOpen.bind(this);
@@ -56,16 +57,21 @@ class CaculateGrade extends Component {
     const grade = this.props.grade.filter(function(item) {
       return item !== undefined;
     });
+    console.log('caculate grade: ', grade);
     if (grade.length > 0) {
       const caculateResult = caculate(grade);
       console.log(caculateResult);
       this.setState({
         caculateResult: caculateResult,
         open: true,
+        gradeLength: grade.length,
         title: '您一共选择了 ' + grade.length + ' 门课程'
       });
       // this.handleOpen('您一共选择了 ' + grade.length + ' 门课程');
     } else {
+      this.setState({
+        gradeLength: 0
+      });
       this.handleOpen('请选择要计算的课程');
     }
   }
@@ -82,7 +88,8 @@ class CaculateGrade extends Component {
     let caculateResultDom = '';
     console.log('caculateResult: ', this.state.caculateResult);
     const caculateResult = this.state.caculateResult;
-    if (this.state.open && caculateResult.averageGpa !== undefined) {
+    if (this.state.open && this.state.gradeLength > 0) {
+      console.log('cccc');
       // dialog is open and caculateResult.averageGpa is not undefined
       caculateResultDom = (
         <div>
