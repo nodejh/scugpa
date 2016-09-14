@@ -18,8 +18,8 @@ const URL_GET_GRADE = '/grade';
 
 const styles = {
   loading: {
-    display: 'flex',
-    justifyContent: 'center'
+    // display: 'flex',
+    // justifyContent: 'center'
   },
   taps: {
 

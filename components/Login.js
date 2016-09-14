@@ -163,7 +163,7 @@ class Login extends Component {
               style={styles.button}
               className='button'
               label='计算绩点平均分'
-              onClick={this.onClickButton}
+              onTouchTap={this.onClickButton}
             />
             <div>
               <p style={styles.tips}>使用微信一键计算绩点?</p>

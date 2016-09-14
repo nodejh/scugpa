@@ -1,8 +1,10 @@
 var path = require('path');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var webpack = require('webpack');
 
 var BUILD_DIR = path.resolve(__dirname, './public/assets');
 var APP_DIR = path.resolve(__dirname, './components');
+
 
 var config = {
   entry: [
@@ -42,7 +44,12 @@ var config = {
     extensions: ['', '.js', '.jsx']
   },
   plugins: [
-    new ExtractTextPlugin('bundle.css')
+    new ExtractTextPlugin('bundle.css'),
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify("production")
+      }
+    })
   ]
 };
 

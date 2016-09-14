@@ -4,10 +4,13 @@ import RefreshIndicator from 'material-ui/RefreshIndicator';
 const style = {
   container: {
     position: 'absolute',
+    width: '100%',
+    textAlign: 'center'
   },
   refresh: {
     display: 'inline-block',
     position: 'relative',
+    margin: '0 auto'
   },
 };
 

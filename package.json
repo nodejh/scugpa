@@ -16,6 +16,7 @@
     "eventproxy": "^0.3.5",
     "express": "^4.13.4",
     "express-session": "^1.14.1",
+    "extract-text-webpack-plugin": "^1.0.1",
     "material-ui": "^0.15.4",
     "morgan": "~1.6.1",
     "react": "^15.3.1",
@@ -28,6 +29,7 @@
     "serve-favicon": "~2.3.0",
     "superagent": "^2.2.0",
     "superagent-charset": "^1.1.1",
+    "webpack": "^1.13.2",
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
@@ -41,11 +43,9 @@
     "eslint-plugin-import": "^1.14.0",
     "eslint-plugin-jsx-a11y": "^2.2.1",
     "eslint-plugin-react": "^6.2.0",
-    "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.1"
   }
 }
