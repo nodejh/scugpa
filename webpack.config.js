@@ -6,6 +6,7 @@ var APP_DIR = path.resolve(__dirname, './components');
 
 var config = {
   entry: [
+    'whatwg-fetch',
     // 'webpack-dev-server/client?http://localhost:3000',
     // 'webpack/hot/dev-server',
     APP_DIR + '/entry.js'

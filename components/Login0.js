@@ -11,20 +11,21 @@ const URL_LOGIN = '/login';
 const styles = {
   loginContent: {
     display: 'flex',
+    flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
     marginTop: '50px'
   },
   textWidth: {
-    width: '100%'
+    width: '300px'
   },
   button: {
-    marginTop: '30px',
-    width: '100%'
+    width: '300px',
+    marginTop: '30px'
   },
   loginText: {
-    // width: '300px',
-    // padding: '30px',
+    width: '300px',
+    padding: '30px',
     backgroundColor: '#fff',
     boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px'
   },
@@ -132,7 +133,7 @@ class Login extends Component {
     return (
       <div>
         <AppBarIconMenu />
-        <div style={styles.loginContent} className='loginContent'>
+        <div style={styles.loginContent}>
           { this.state.isLoading && <RefreshIndicatorLoading initSize='30' initLeft='0' initTop='-15' initStatus='loading' /> }
           <div style={styles.loginText} className='loginText'>
             <h2>四川大学绩点平均分一键计算</h2>
@@ -146,7 +147,6 @@ class Login extends Component {
               onChange={(event, value) => this.setState({ number: value })}
               value={this.state.number}
             />
-            <br/>
             <TextField
               style={styles.textWidth}
               className='textWidth'
@@ -157,7 +157,6 @@ class Login extends Component {
               onChange={(event, value) => this.setState({ password: value })}
               value={this.state.password}
             />
-            <br/>
             <RaisedButton
               primary={true}
               style={styles.button}

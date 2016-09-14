@@ -102,7 +102,7 @@ class CaculateGrade extends Component {
     return (
       <div>
         <FloatingActionButton
-          onClick={this.onClickCaculate}
+          onTouchTap={this.onClickCaculate}
           mini={true}
           secondary={true}
           style={styles.caculate}>
