@@ -51664,7 +51664,7 @@
 	          null,
 	          _react2.default.createElement(
 	            _Table.Table,
-	            { selectable: false },
+	            { selectable: false, className: 'table' },
 	            _react2.default.createElement(
 	              _Table.TableBody,
 	              { displayRowCheckbox: false },
@@ -51730,7 +51730,8 @@
 	            { multiSelectable: true, fixedFooter: true,
 	              onRowSelection: function onRowSelection(selectedRows) {
 	                return _this2.onRowSelection(selectedRows);
-	              }
+	              },
+	              className: 'table'
 	            },
 	            _react2.default.createElement(
 	              _Table.TableHeader,
@@ -52202,7 +52203,7 @@
 	            null,
 	            _react2.default.createElement(
 	              _Table.Table,
-	              { selectable: false },
+	              { selectable: false, className: 'table' },
 	              _react2.default.createElement(
 	                _Table.TableBody,
 	                { displayRowCheckbox: false },
@@ -52263,7 +52264,8 @@
 	              { multiSelectable: true, fixedFooter: true,
 	                onRowSelection: function onRowSelection(selectedRows) {
 	                  return _this2.onTermRowSelection(selectedRows, termIndex);
-	                }
+	                },
+	                className: 'table'
 	              },
 	              _react2.default.createElement(
 	                _Table.TableHeader,
@@ -52349,7 +52351,7 @@
 	          null,
 	          _react2.default.createElement(
 	            _Table.Table,
-	            { selectable: false },
+	            { selectable: false, className: 'table' },
 	            _react2.default.createElement(
 	              _Table.TableBody,
 	              { displayRowCheckbox: false },
@@ -52378,7 +52380,8 @@
 	            { multiSelectable: true, fixedFooter: true,
 	              onRowSelection: function onRowSelection(selectedRows) {
 	                return _this3.onCurrentFailRowSelection(selectedRows);
-	              }
+	              },
+	              className: 'table'
 	            },
 	            _react2.default.createElement(
 	              _Table.TableHeader,
@@ -52463,7 +52466,7 @@
 	          null,
 	          _react2.default.createElement(
 	            _Table.Table,
-	            { selectable: false },
+	            { selectable: false, className: 'table' },
 	            _react2.default.createElement(
 	              _Table.TableBody,
 	              { displayRowCheckbox: false },
@@ -52492,7 +52495,8 @@
 	            { multiSelectable: true, fixedFooter: true,
 	              onRowSelection: function onRowSelection(selectedRows) {
 	                return _this3.onBeforeFailRowSelection(selectedRows);
-	              }
+	              },
+	              className: 'table'
 	            },
 	            _react2.default.createElement(
 	              _Table.TableHeader,

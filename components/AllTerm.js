@@ -217,7 +217,7 @@ class AllTerm extends Component {
         });
         averagePassDom = (
           <div>
-            <Table selectable={false}>
+            <Table selectable={false} className='table'>
               <TableBody displayRowCheckbox={false}>
                 <TableRow displayBorder={true}>
                   <TableRowColumn colSpan='2' style={styles.textAlignCenter}>
@@ -249,6 +249,7 @@ class AllTerm extends Component {
             {averagePassDom}
             <Table multiSelectable={true} fixedFooter={true}
               onRowSelection={ (selectedRows) => this.onTermRowSelection(selectedRows, termIndex)}
+              className='table'
             >
               <TableHeader enableSelectAll={true} displaySelectAll={true}>
                 <TableRow>
@@ -288,7 +289,7 @@ class AllTerm extends Component {
       });
       averageDom = (
         <div>
-          <Table selectable={false}>
+          <Table selectable={false} className='table'>
             <TableBody displayRowCheckbox={false}>
               <TableRow displayBorder={true} style={styles.borderBottom}>
                 <TableRowColumn colSpan='2' style={styles.textAlignCenter}>
@@ -304,6 +305,7 @@ class AllTerm extends Component {
           {averageDom}
           <Table multiSelectable={true} fixedFooter={true}
             onRowSelection={ (selectedRows) => this.onCurrentFailRowSelection(selectedRows)}
+            className='table'
           >
             <TableHeader enableSelectAll={true} displaySelectAll={true}>
               <TableRow>
@@ -340,7 +342,7 @@ class AllTerm extends Component {
       });
       averageDom = (
         <div>
-          <Table selectable={false}>
+          <Table selectable={false} className='table'>
             <TableBody displayRowCheckbox={false}>
               <TableRow displayBorder={true} style={styles.borderBottom}>
                 <TableRowColumn colSpan='2' style={styles.textAlignCenter}>
@@ -356,6 +358,7 @@ class AllTerm extends Component {
           {averageDom}
           <Table multiSelectable={true} fixedFooter={true}
             onRowSelection={ (selectedRows) => this.onBeforeFailRowSelection(selectedRows)}
+            className='table'
           >
             <TableHeader enableSelectAll={true} displaySelectAll={true}>
               <TableRow>

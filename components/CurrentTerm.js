@@ -117,7 +117,7 @@ class CurrentTerm extends Component {
 
       averageDom = (
         <div>
-          <Table selectable={false}>
+          <Table selectable={false} className='table'>
             <TableBody displayRowCheckbox={false}>
               <TableRow displayBorder={true}>
                 <TableRowColumn colSpan='2' style={styles.textAlignCenter}>
@@ -152,6 +152,7 @@ class CurrentTerm extends Component {
           {averageDom}
           <Table multiSelectable={true} fixedFooter={true}
             onRowSelection={ (selectedRows) => this.onRowSelection(selectedRows)}
+            className='table'
           >
             <TableHeader enableSelectAll={true} displaySelectAll={true}>
               <TableRow>
