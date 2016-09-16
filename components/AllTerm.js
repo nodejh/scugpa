@@ -25,6 +25,18 @@ const styles = {
     whiteSpace: 'pre-wrap',
     overflow: 'visible'
   },
+  tableRowColumn35: {
+    width: '35%',
+    height: 'auto',
+    whiteSpace: 'pre-wrap',
+    overflow: 'visible'
+  },
+  tableRowColumn20: {
+    width: '20%',
+    height: 'auto',
+    whiteSpace: 'pre-wrap',
+    overflow: 'visible'
+  },
   tableRowColumn15: {
     width: '15%',
     height: 'auto',
@@ -309,11 +321,11 @@ class AllTerm extends Component {
           >
             <TableHeader enableSelectAll={true} displaySelectAll={true}>
               <TableRow>
-                <TableHeaderColumn style={styles.tableRowColumn40}>课程名</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn35}>课程名</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>学分</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>课程属性</TableHeaderColumn>
-                <TableHeaderColumn style={styles.tableRowColumn15}>考试时间</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>成绩</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn20}>考试时间</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={false}>
@@ -365,8 +377,8 @@ class AllTerm extends Component {
                 <TableHeaderColumn style={styles.tableRowColumn40}>课程名</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>学分</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>课程属性</TableHeaderColumn>
-                <TableHeaderColumn style={styles.tableRowColumn15}>考试时间</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>成绩</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn15}>考试时间</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={false}>
