@@ -30,6 +30,11 @@ const styles = {
     height: 'auto',
     whiteSpace: 'pre-wrap',
     overflow: 'visible'
+  },
+  tableRowWrap: {
+    height: 'auto',
+    whiteSpace: 'pre-wrap',
+    overflow: 'visible'
   }
 };
 
@@ -220,14 +225,18 @@ class AllTerm extends Component {
                   </TableRowColumn>
                 </TableRow>
                 <TableRow displayBorder={false}>
-                  <TableRowColumn>全部绩点: {term.averageGpa}</TableRowColumn>
-                  <TableRowColumn>
+                  <TableRowColumn style={styles.tableRowWrap}>
+                    全部绩点: {term.averageGpa}
+                  </TableRowColumn>
+                  <TableRowColumn style={styles.tableRowWrap}>
                     必修绩点: {term.averageGpaObligatory}
                   </TableRowColumn>
                 </TableRow>
                 <TableRow displayBorder={false} style={styles.borderBottom}>
-                  <TableRowColumn>全部平均分: {term.averageGrade}</TableRowColumn>
-                  <TableRowColumn>
+                  <TableRowColumn style={styles.tableRowWrap}>
+                    全部平均分: {term.averageGrade}
+                  </TableRowColumn>
+                  <TableRowColumn style={styles.tableRowWrap}>
                     必修平均分: {term.averageGradeObligatory}
                   </TableRowColumn>
                 </TableRow>
@@ -245,11 +254,11 @@ class AllTerm extends Component {
                 <TableRow>
                   {/* <TableHeaderColumn>课程号</TableHeaderColumn> */}
                   {/* <TableHeaderColumn>课序号</TableHeaderColumn> */}
-                  <TableHeaderColumn style={{ width: '40%' }}>课程名</TableHeaderColumn>
-                  <TableHeaderColumn style={{ width: '15%' }}>学分</TableHeaderColumn>
-                  <TableHeaderColumn style={{ width: '15%' }}>课程属性</TableHeaderColumn>
-                  <TableHeaderColumn style={{ width: '15%' }}>成绩</TableHeaderColumn>
-                  <TableHeaderColumn style={{ width: '15%' }}>绩点</TableHeaderColumn>
+                  <TableHeaderColumn style={styles.tableRowColumn40}>课程名</TableHeaderColumn>
+                  <TableHeaderColumn style={styles.tableRowColumn15}>学分</TableHeaderColumn>
+                  <TableHeaderColumn style={styles.tableRowColumn15}>课程属性</TableHeaderColumn>
+                  <TableHeaderColumn style={styles.tableRowColumn15}>成绩</TableHeaderColumn>
+                  <TableHeaderColumn style={styles.tableRowColumn15}>绩点</TableHeaderColumn>
                 </TableRow>
               </TableHeader>
               <TableBody deselectOnClickaway={false}>
@@ -298,11 +307,11 @@ class AllTerm extends Component {
           >
             <TableHeader enableSelectAll={true} displaySelectAll={true}>
               <TableRow>
-                <TableHeaderColumn style={{ width: '40%' }}>课程名</TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '15%' }}>学分</TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '15%' }}>课程属性</TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '15%' }}>考试时间</TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '15%' }}>成绩</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn40}>课程名</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn15}>学分</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn15}>课程属性</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn15}>考试时间</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn15}>成绩</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={false}>
@@ -350,11 +359,11 @@ class AllTerm extends Component {
           >
             <TableHeader enableSelectAll={true} displaySelectAll={true}>
               <TableRow>
-                <TableHeaderColumn style={{ width: '40%' }}>课程名</TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '15%' }}>学分</TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '15%' }}>课程属性</TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '15%' }}>考试时间</TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '15%' }}>成绩</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn40}>课程名</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn15}>学分</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn15}>课程属性</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn15}>考试时间</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn15}>成绩</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={false}>
