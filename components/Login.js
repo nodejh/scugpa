@@ -4,10 +4,12 @@ import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import { Card, CardMedia } from 'material-ui/Card';
 import AppBarIconMenu from './AppBarIconMenu';
 import RefreshIndicatorLoading from './RefreshIndicator';
 
 const URL_LOGIN = '/login';
+const URL_WECHAT = 'http://mp.weixin.qq.com/s?__biz=MjM5NTA4Mjc4MA==&mid=200899913&idx=1&sn=6af2659f27bb52b536629bd1f76c4625#rd';
 const styles = {
   loginContent: {
     display: 'flex',
@@ -36,7 +38,11 @@ const styles = {
   refresh: {
     display: 'inline-block',
     position: 'relative',
-  }
+  },
+  wechatTipsDialogContent: {
+    width: '300px',
+    height: '300px'
+  },
 };
 
 class Login extends Component {
@@ -47,6 +53,7 @@ class Login extends Component {
       isLoading: false,
       open: false,
       openTips: false,
+      openWechatTips: false,
       title: '',
       number: '',
       password: ''
@@ -54,6 +61,9 @@ class Login extends Component {
     this.onClickButton = this.onClickButton.bind(this);
     this.handleCloseDialog = this.handleCloseDialog.bind(this);
     this.handleOpenDialog = this.handleOpenDialog.bind(this);
+    this.handleOpenWechatTips = this.handleOpenWechatTips.bind(this);
+    this.handleCloseWechatTips = this.handleCloseWechatTips.bind(this);
+    this.handleRedirectWechatTips = this.handleRedirectWechatTips.bind(this);
   }
 
 
@@ -119,6 +129,33 @@ class Login extends Component {
   }
 
 
+  /**
+   * 打开 wechat tips dialog
+   */
+
+  handleOpenWechatTips() {
+    this.setState({
+      openWechatTips: true
+    });
+  }
+
+
+  /**
+   * 关闭 wechat tips dialog
+   */
+  handleCloseWechatTips() {
+    this.setState({ openWechatTips: false });
+  }
+
+
+  /**
+   *  wechat tips dialog 跳转到另一个页面
+   */
+  handleRedirectWechatTips() {
+    window.location = URL_WECHAT;
+  }
+
+
   render() {
     // console.log('this state: ', this.state);
     const actions = [
@@ -127,6 +164,19 @@ class Login extends Component {
         primary={true}
         onTouchTap={this.handleCloseDialog}
       />
+    ];
+
+    const actionsWechat = [
+      <FlatButton
+        label="确定"
+        primary={true}
+        onTouchTap={this.handleCloseWechatTips}
+      />,
+      <FlatButton
+        label="关注飞扬微信"
+        primary={true}
+        onTouchTap={this.handleRedirectWechatTips}
+      />,
     ];
 
     return (
@@ -166,13 +216,14 @@ class Login extends Component {
               onTouchTap={this.onClickButton}
             />
             <div>
-              <p style={styles.tips}>使用微信一键计算绩点?</p>
+              <p style={styles.tips} onTouchTap={this.handleOpenWechatTips}>使用微信一键计算绩点?</p>
             </div>
           </div>
         </div>
         <footer>
           <a target='_blank' href='http://fyscu.com'>@飞扬俱乐部</a>·「<a target='_blank' href='http://lab.fyscu.com'>研发实验室</a>」出品
         </footer>
+
         <Dialog
           title={this.state.title}
           actions={actions}
@@ -182,6 +233,20 @@ class Login extends Component {
         >
         </Dialog>
 
+        <Dialog
+          title="使用微信一键查看绩点"
+          actions={actionsWechat}
+          modal={false}
+          open={this.state.openWechatTips}
+          contentStyle={styles.wechatTipsDialogContent}
+          onRequestClose={this.handleCloseWechatTips}
+        >
+          <Card>
+            <CardMedia>
+              <img src="/images/qrcode.jpg" />
+            </CardMedia>
+          </Card>
+        </Dialog>
       </div>
     );
   }

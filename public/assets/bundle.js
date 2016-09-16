@@ -53409,6 +53409,8 @@
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
+	var _Card = __webpack_require__(489);
+
 	var _AppBarIconMenu = __webpack_require__(447);
 
 	var _AppBarIconMenu2 = _interopRequireDefault(_AppBarIconMenu);
@@ -53426,6 +53428,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var URL_LOGIN = '/login';
+	var URL_WECHAT = 'http://mp.weixin.qq.com/s?__biz=MjM5NTA4Mjc4MA==&mid=200899913&idx=1&sn=6af2659f27bb52b536629bd1f76c4625#rd';
 	var styles = {
 	  loginContent: {
 	    display: 'flex',
@@ -53454,6 +53457,10 @@
 	  refresh: {
 	    display: 'inline-block',
 	    position: 'relative'
+	  },
+	  wechatTipsDialogContent: {
+	    width: '300px',
+	    height: '300px'
 	  }
 	};
 
@@ -53469,6 +53476,7 @@
 	      isLoading: false,
 	      open: false,
 	      openTips: false,
+	      openWechatTips: false,
 	      title: '',
 	      number: '',
 	      password: ''
@@ -53476,6 +53484,9 @@
 	    _this.onClickButton = _this.onClickButton.bind(_this);
 	    _this.handleCloseDialog = _this.handleCloseDialog.bind(_this);
 	    _this.handleOpenDialog = _this.handleOpenDialog.bind(_this);
+	    _this.handleOpenWechatTips = _this.handleOpenWechatTips.bind(_this);
+	    _this.handleCloseWechatTips = _this.handleCloseWechatTips.bind(_this);
+	    _this.handleRedirectWechatTips = _this.handleRedirectWechatTips.bind(_this);
 	    return _this;
 	  }
 
@@ -53548,6 +53559,38 @@
 	        open: true
 	      });
 	    }
+
+	    /**
+	     * 打开 wechat tips dialog
+	     */
+
+	  }, {
+	    key: 'handleOpenWechatTips',
+	    value: function handleOpenWechatTips() {
+	      this.setState({
+	        openWechatTips: true
+	      });
+	    }
+
+	    /**
+	     * 关闭 wechat tips dialog
+	     */
+
+	  }, {
+	    key: 'handleCloseWechatTips',
+	    value: function handleCloseWechatTips() {
+	      this.setState({ openWechatTips: false });
+	    }
+
+	    /**
+	     *  wechat tips dialog 跳转到另一个页面
+	     */
+
+	  }, {
+	    key: 'handleRedirectWechatTips',
+	    value: function handleRedirectWechatTips() {
+	      window.location = URL_WECHAT;
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -53558,6 +53601,16 @@
 	        label: '确定',
 	        primary: true,
 	        onTouchTap: this.handleCloseDialog
+	      })];
+
+	      var actionsWechat = [_react2.default.createElement(_FlatButton2.default, {
+	        label: '确定',
+	        primary: true,
+	        onTouchTap: this.handleCloseWechatTips
+	      }), _react2.default.createElement(_FlatButton2.default, {
+	        label: '关注飞扬微信',
+	        primary: true,
+	        onTouchTap: this.handleRedirectWechatTips
 	      })];
 
 	      return _react2.default.createElement(
@@ -53614,7 +53667,7 @@
 	              null,
 	              _react2.default.createElement(
 	                'p',
-	                { style: styles.tips },
+	                { style: styles.tips, onTouchTap: this.handleOpenWechatTips },
 	                '使用微信一键计算绩点?'
 	              )
 	            )
@@ -53642,7 +53695,27 @@
 	          modal: false,
 	          open: this.state.open,
 	          onRequestClose: this.handleCloseDialog
-	        })
+	        }),
+	        _react2.default.createElement(
+	          _Dialog2.default,
+	          {
+	            title: '使用微信一键查看绩点',
+	            actions: actionsWechat,
+	            modal: false,
+	            open: this.state.openWechatTips,
+	            contentStyle: styles.wechatTipsDialogContent,
+	            onRequestClose: this.handleCloseWechatTips
+	          },
+	          _react2.default.createElement(
+	            _Card.Card,
+	            null,
+	            _react2.default.createElement(
+	              _Card.CardMedia,
+	              null,
+	              _react2.default.createElement('img', { src: '/images/qrcode.jpg' })
+	            )
+	          )
+	        )
 	      );
 	    }
 	  }]);
