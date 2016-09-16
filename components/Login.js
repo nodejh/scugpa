@@ -189,8 +189,8 @@ class Login extends Component {
             <TextField
               style={styles.textWidth}
               className='textWidth'
-              hintText='请输入您的学号'
-              floatingLabelText='请输入您的学号'
+              hintText='请输入您的教务系统账号'
+              floatingLabelText='请输入您的教务系统账号'
               autoComplete='off'
               type='number'
               onChange={(event, value) => this.setState({ number: value })}
@@ -200,8 +200,8 @@ class Login extends Component {
             <TextField
               style={styles.textWidth}
               className='textWidth'
-              hintText='请输入您的密码'
-              floatingLabelText='请输入您的密码'
+              hintText='请输入您的教务系统密码'
+              floatingLabelText='请输入您的教务系统密码'
               type='password'
               autoComplete='off'
               onChange={(event, value) => this.setState({ password: value })}

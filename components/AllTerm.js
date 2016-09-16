@@ -294,8 +294,8 @@ class AllTerm extends Component {
             <TableRowColumn style={styles.tableRowColumn40}>{item.courseName}</TableRowColumn>
             <TableRowColumn style={styles.tableRowColumn15}>{item.credit}</TableRowColumn>
             <TableRowColumn style={styles.tableRowColumn15}>{item.courseProperty}</TableRowColumn>
-            <TableRowColumn style={styles.tableRowColumn15}>{item.examDate}</TableRowColumn>
             <TableRowColumn style={styles.tableRowColumn15}>{item.grade}</TableRowColumn>
+            <TableRowColumn style={styles.tableRowColumn15}>{item.examDate}</TableRowColumn>
           </TableRow>
         );
       });
