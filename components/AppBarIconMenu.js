@@ -49,6 +49,7 @@ class AppBarIconMenu extends Component {
       <div>
         <AppBar
           title="四川大学绩点平均分一键计算"
+          iconElementLeft={<span></span>}
           iconElementRight={
             <IconMenu
               iconButtonElement={
