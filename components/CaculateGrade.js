@@ -20,6 +20,10 @@ const styles = {
     position: 'fixed',
     zIndex: 999
   },
+  caculateIconStyle: {
+    // height: '50px',
+    // width: '50px'
+  },
   diglogItem: {
     marginBottom: 10
   }
@@ -103,10 +107,12 @@ class CaculateGrade extends Component {
       <div>
         <FloatingActionButton
           onTouchTap={this.onClickCaculate}
-          mini={true}
+          mini={false}
           secondary={true}
-          style={styles.caculate}>
-          <Icon name='calculator' />
+          style={styles.caculate}
+          iconStyle={styles.caculateIconStyle}
+        >
+          <Icon name='calculator' size='lg' />
         </FloatingActionButton>
         <Dialog
           title={this.state.title}
