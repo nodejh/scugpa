@@ -31,8 +31,8 @@ const styles = {
     whiteSpace: 'pre-wrap',
     overflow: 'visible'
   },
-  tableRowColumn25: {
-    width: '25%',
+  tableRowColumn10: {
+    width: '10%',
     height: 'auto',
     whiteSpace: 'pre-wrap',
     overflow: 'visible'
@@ -267,11 +267,11 @@ class AllTerm extends Component {
                 <TableRow>
                   {/* <TableHeaderColumn>课程号</TableHeaderColumn> */}
                   {/* <TableHeaderColumn>课序号</TableHeaderColumn> */}
-                  <TableHeaderColumn style={styles.tableRowColumn30}>课程名</TableHeaderColumn>
+                  <TableHeaderColumn style={styles.tableRowColumn40}>课程名</TableHeaderColumn>
                   <TableHeaderColumn style={styles.tableRowColumn15}>学分</TableHeaderColumn>
                   <TableHeaderColumn style={styles.tableRowColumn15}>课程属性</TableHeaderColumn>
                   <TableHeaderColumn style={styles.tableRowColumn15}>成绩</TableHeaderColumn>
-                  <TableHeaderColumn style={styles.tableRowColumn25}>绩点</TableHeaderColumn>
+                  <TableHeaderColumn style={styles.tableRowColumn15}>绩点</TableHeaderColumn>
                 </TableRow>
               </TableHeader>
               <TableBody deselectOnClickaway={false}>
@@ -292,10 +292,10 @@ class AllTerm extends Component {
         return (
           <TableRow key={index} selected={item.selected} style={styles.heightAuto}>
             <TableRowColumn style={styles.tableRowColumn30}>{item.courseName}</TableRowColumn>
-            <TableRowColumn style={styles.tableRowColumn15}>{item.credit}</TableRowColumn>
+            <TableRowColumn style={styles.tableRowColumn10}>{item.credit}</TableRowColumn>
             <TableRowColumn style={styles.tableRowColumn15}>{item.courseProperty}</TableRowColumn>
             <TableRowColumn style={styles.tableRowColumn15}>{item.grade}</TableRowColumn>
-            <TableRowColumn style={styles.tableRowColumn25}>{item.examDate}</TableRowColumn>
+            <TableRowColumn style={styles.tableRowColumn30}>{item.examDate}</TableRowColumn>
           </TableRow>
         );
       });
@@ -322,10 +322,10 @@ class AllTerm extends Component {
             <TableHeader enableSelectAll={true} displaySelectAll={true}>
               <TableRow>
                 <TableHeaderColumn style={styles.tableRowColumn30}>课程名</TableHeaderColumn>
-                <TableHeaderColumn style={styles.tableRowColumn15}>学分</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn10}>学分</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>课程属性</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>成绩</TableHeaderColumn>
-                <TableHeaderColumn style={styles.tableRowColumn25}>考试时间</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn30}>考试时间</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={false}>
@@ -345,10 +345,10 @@ class AllTerm extends Component {
         return (
           <TableRow key={index} selected={item.selected} style={styles.heightAuto}>
             <TableRowColumn style={styles.tableRowColumn30}>{item.courseName}</TableRowColumn>
-            <TableRowColumn style={styles.tableRowColumn15}>{item.credit}</TableRowColumn>
+            <TableRowColumn style={styles.tableRowColumn10}>{item.credit}</TableRowColumn>
             <TableRowColumn style={styles.tableRowColumn15}>{item.courseProperty}</TableRowColumn>
             <TableRowColumn style={styles.tableRowColumn15}>{item.grade}</TableRowColumn>
-            <TableRowColumn style={styles.tableRowColumn25}>{item.examDate}</TableRowColumn>
+            <TableRowColumn style={styles.tableRowColumn30}>{item.examDate}</TableRowColumn>
           </TableRow>
         );
       });
@@ -375,10 +375,10 @@ class AllTerm extends Component {
             <TableHeader enableSelectAll={true} displaySelectAll={true}>
               <TableRow>
                 <TableHeaderColumn style={styles.tableRowColumn30}>课程名</TableHeaderColumn>
-                <TableHeaderColumn style={styles.tableRowColumn15}>学分</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn10}>学分</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>课程属性</TableHeaderColumn>
                 <TableHeaderColumn style={styles.tableRowColumn15}>成绩</TableHeaderColumn>
-                <TableHeaderColumn style={styles.tableRowColumn25}>考试时间</TableHeaderColumn>
+                <TableHeaderColumn style={styles.tableRowColumn30}>考试时间</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={false}>
