@@ -49,6 +49,7 @@ router.get('/login', function(req, res) {
 router.post('/login', function(req, res) {
   const number = req.body.number;
   const password = req.body.password;
+  console.log('=================', number, password);
   if (!REG_EXP_NUMBER.test(number)) {
     return res.json({
       code: 1001,
@@ -83,8 +84,8 @@ router.post('/login', function(req, res) {
     });
     const loginResText = $('body').text().replace(/\s+/g, '');
     // console.log('resLogin: ', resLogin.text.replace(/\s+/g, ''));
-    console.log('loginResText: ', loginResText);
-    console.log(loginResText.indexOf(ERROR_STRING));
+    // console.log('loginResText: ', loginResText);
+    // console.log(loginResText.indexOf(ERROR_STRING));
     if (loginResText.indexOf(ERROR_STRING) !== -1) {
       if (loginResText.indexOf(ERROR_STRING_NUMBER) !== -1) {
         return res.json({
@@ -125,7 +126,7 @@ router.post('/login', function(req, res) {
  */
 router.get('/grade', function(req, res) {
   console.log('/grade');
-  console.log(req.session);
+  // console.log(req.session);
   if (!req.session.user) {
     return res.json({
       code: 1100,
@@ -183,7 +184,7 @@ router.get('/grade', function(req, res) {
         xmlMode: false,
         lowerCaseTags: false
       });
-      console.log('===========currentTermText: ', currentTermText);
+      // console.log('===========currentTermText: ', currentTermText);
       if (currentTermText.indexOf(ERROR_STRING_DATABASE) !== -1) {
         // 抓取失败，数据库忙，需要重新登陆抓取
         ep.emit('currentTerm', [ERROR_STRING_DATABASE, resCurrentTerm]);
@@ -246,18 +247,18 @@ router.get('/grade', function(req, res) {
         xmlMode: false,
         lowerCaseTags: false
       });
-      console.log('===========allPassText: ', allPassText);
+      // console.log('===========allPassText: ', allPassText);
       if (allPassText.indexOf(ERROR_STRING_DATABASE) !== -1) {
         // 抓取失败，数据库忙，需要重新登陆抓取
         ep.emit('allPass', [ERROR_STRING_DATABASE, allPassText]);
       } else {
         const gradeTable = $('body').find('table[class="titleTop2"]');
-        console.log('gradeTable: ', gradeTable.length);
+        // console.log('gradeTable: ', gradeTable.length);
         const allPassGradeList = {};
         allPassGradeList.gradeList = []; // 成绩列表
         gradeTable.each(function() {
           // 获取每一学期成绩
-          console.log($(this).prev().prev().text());
+          // console.log($(this).prev().prev().text());
           const gradeList = {};
           gradeList.term = $(this).prev().prev().text()
             .replace(/\s+/g, '');
