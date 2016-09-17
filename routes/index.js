@@ -320,7 +320,7 @@ router.get('/grade', function(req, res) {
         xmlMode: false,
         lowerCaseTags: false
       });
-      console.log('===========allFailText: ', allFailText);
+      // console.log('===========allFailText: ', allFailText);
       if (allFailText.indexOf(ERROR_STRING_DATABASE) !== -1) {
         // 抓取失败，数据库忙，需要重新登陆抓取
         ep.emit('allFail', [ERROR_STRING_DATABASE, allFailText]);
