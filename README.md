@@ -4,7 +4,7 @@
 + PHP5 [https://github.com/nodejh/scugpa/tree/php5](https://github.com/nodejh/scugpa/tree/php5)
 
 
-## Link
+## Links
 
 ONLINE: [http://gpa.fyscu.com](http://gpa.fyscu.com)
 
@@ -19,7 +19,7 @@ $ npm install
 $ npm start
 ```
 
-Then open `localhost3003` in youer browser.
+Then open `localhost:3003` in youer browser.
 
 
 ## 计算方法
